@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 require Carp;
-use SQL::Builder::Expression;
 
 sub new {
     my $class = shift;

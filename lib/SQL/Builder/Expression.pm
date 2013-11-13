@@ -4,15 +4,21 @@ use strict;
 use warnings;
 
 require Carp;
+use SQL::Builder::Quoter;
 
 sub new {
     my $class = shift;
-    my (@params) = @_;
+    my (%params) = @_;
+
+    my $expr = $params{expr};
+    $expr = [$expr] unless ref $expr eq 'ARRAY';
 
     my $self = {};
     bless $self, $class;
 
-    my ($sql, $bind) = $self->_build_subexpr('-and', \@params);
+    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+
+    my ($sql, $bind) = $self->_build_subexpr('-and', $expr);
 
     $self->{sql}  = $sql;
     $self->{bind} = $bind;
@@ -30,7 +36,10 @@ sub _build_subexpr {
     my @parts;
     my @bind;
     while (my ($key, $value) = splice(@$params, 0, 2)) {
+        my $quote = 1;
         if (ref $key) {
+            $quote = 0;
+
             my ($_key, $_bind) = $self->_build_value($key);
 
             $key = $_key;
@@ -48,13 +57,13 @@ sub _build_subexpr {
 
             my ($_value, $_bind) = $self->_build_value($subvalue);
 
-            push @parts, $key . " $op $_value";
+            push @parts, $self->_quote($quote, $key) . " $op $_value";
             push @bind,  @$_bind;
         }
         elsif (defined $value) {
             my ($_value, $_bind) = $self->_build_value($value);
 
-            push @parts, $key . " = $_value";
+            push @parts, $self->_quote($quote, $key) . " = $_value";
             push @bind,  @$_bind;
         }
         else {
@@ -99,5 +108,14 @@ sub _build_value {
 
 sub to_sql { shift->{sql} }
 sub to_bind { @{shift->{bind} || []} }
+
+sub _quote {
+    my $self = shift;
+    my ($yes, $column) = @_;
+
+    return $column unless $yes;
+
+    return $self->{quoter}->quote($column);
+}
 
 1;

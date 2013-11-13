@@ -10,7 +10,7 @@ subtest 'build simple' => sub {
       SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT a,b FROM table';
+    is $sql, 'SELECT `a`,`b` FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -23,7 +23,7 @@ subtest 'build column as' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT foo AS bar FROM table';
+    is $sql, 'SELECT `foo` AS `bar` FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -34,7 +34,7 @@ subtest 'build column as is' => sub {
       SQL::Builder::Select->new(from => 'table', columns => [\'COUNT(*)']);
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT COUNT(*) FROM table';
+    is $sql, 'SELECT COUNT(*) FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -43,11 +43,11 @@ subtest 'build column as is' => sub {
 subtest 'build column as with as is' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',
-        columns => [{-col => 'COUNT(*)', -as => 'count'}]
+        columns => [{-col => \'COUNT(*)', -as => 'count'}]
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT COUNT(*) AS count FROM table';
+    is $sql, 'SELECT COUNT(*) AS `count` FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -61,7 +61,7 @@ subtest 'build with where' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT a,b FROM table WHERE a = ?';
+    is $sql, 'SELECT `a`,`b` FROM `table` WHERE `a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
@@ -75,7 +75,7 @@ subtest 'build with join' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT a,b FROM table JOIN table ON a = ?';
+    is $sql, 'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
@@ -92,7 +92,8 @@ subtest 'build with multiple joins' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT a,b FROM table JOIN table ON a = ? JOIN table ON c = ?';
+    is $sql,
+'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'd'];

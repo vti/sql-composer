@@ -10,7 +10,7 @@ subtest 'build simple' => sub {
       SQL::Builder::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;
-    is $sql, 'UPDATE table SET a = ?';
+    is $sql, 'UPDATE `table` SET `a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
@@ -24,7 +24,7 @@ subtest 'build with where' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'UPDATE table SET a = ? WHERE c = ?';
+    is $sql, 'UPDATE `table` SET `a` = ? WHERE `c` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'd'];
