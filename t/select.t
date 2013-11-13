@@ -67,6 +67,48 @@ subtest 'build with where' => sub {
     is_deeply \@bind, ['b'];
 };
 
+subtest 'build with order by' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        order_by => 'foo'
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with order by with order' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        order_by => [foo => 'desc']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo` DESC';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with order by multi' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        order_by => [foo => 'desc', bar => 'asc']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo` DESC,`bar` ASC';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with join' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',

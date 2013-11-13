@@ -68,6 +68,25 @@ sub new {
         push @bind, $expr->to_bind;
     }
 
+    if (my $order_by = $params{order_by}) {
+        $sql .= ' ORDER BY ';
+        if (ref $order_by) {
+            if (ref($order_by) eq 'ARRAY') {
+                my @order;
+                while (my ($key, $value) = splice @$order_by, 0, 2) {
+                    push @order, $self->_quote($key) . ' ' . uc($value);
+                }
+                $sql .= join ',', @order;
+            }
+            else {
+                Carp::croak('unexpected reference');
+            }
+        }
+        else {
+            $sql .= $self->_quote($order_by);
+        }
+    }
+
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
 
