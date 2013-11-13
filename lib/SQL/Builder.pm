@@ -5,6 +5,19 @@ use warnings;
 
 our $VERSION = '0.01';
 
+use SQL::Builder::Select;
+use SQL::Builder::Insert;
+use SQL::Builder::Delete;
+use SQL::Builder::Update;
+
+sub build {
+    my $class = shift;
+    my ($name) = shift;
+
+    my $class_name = 'SQL::Builder::' . ucfirst($name);
+    return $class_name->new(@_);
+}
+
 1;
 __END__
 
