@@ -87,6 +87,14 @@ sub new {
         }
     }
 
+    if (my $limit = $params{limit}) {
+        $sql .= ' LIMIT ' . $limit;
+    }
+
+    if (my $offset = $params{offset}) {
+        $sql .= ' OFFSET ' . $offset;
+    }
+
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
 

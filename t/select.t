@@ -69,8 +69,8 @@ subtest 'build with where' => sub {
 
 subtest 'build with order by' => sub {
     my $expr = SQL::Builder::Select->new(
-        from    => 'table',
-        columns => ['a', 'b'],
+        from     => 'table',
+        columns  => ['a', 'b'],
         order_by => 'foo'
     );
 
@@ -83,8 +83,8 @@ subtest 'build with order by' => sub {
 
 subtest 'build with order by with order' => sub {
     my $expr = SQL::Builder::Select->new(
-        from    => 'table',
-        columns => ['a', 'b'],
+        from     => 'table',
+        columns  => ['a', 'b'],
         order_by => [foo => 'desc']
     );
 
@@ -97,13 +97,42 @@ subtest 'build with order by with order' => sub {
 
 subtest 'build with order by multi' => sub {
     my $expr = SQL::Builder::Select->new(
-        from    => 'table',
-        columns => ['a', 'b'],
+        from     => 'table',
+        columns  => ['a', 'b'],
         order_by => [foo => 'desc', bar => 'asc']
     );
 
     my $sql = $expr->to_sql;
     is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo` DESC,`bar` ASC';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with limit' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        limit   => 5
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`b` FROM `table` LIMIT 5';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with limit and offset' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        limit   => 5,
+        offset  => 10
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`b` FROM `table` LIMIT 5 OFFSET 10';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
