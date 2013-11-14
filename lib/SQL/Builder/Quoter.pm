@@ -28,6 +28,14 @@ sub quote {
     return join $self->{name_separator}, @parts;
 }
 
+sub concat {
+    my $self = shift;
+    my ($prefix, $column) = @_;
+
+    return join $self->{name_separator},
+      map { $self->quote($_) } ($prefix, $column);
+}
+
 sub split {
     my $self = shift;
     my ($quoted_column) = @_;

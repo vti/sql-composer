@@ -44,4 +44,10 @@ subtest 'return only column' => sub {
     is_deeply [$quoter->split('foo')], ['', 'foo'];
 };
 
+subtest 'concat' => sub {
+    my $quoter = SQL::Builder::Quoter->new();
+
+    is $quoter->concat('table', 'foo'), '`table`.`foo`';
+};
+
 done_testing;
