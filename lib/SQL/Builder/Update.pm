@@ -23,11 +23,21 @@ sub new {
 
     $sql .= $self->_quote($params{table});
 
-    if ($params{values}) {
+    if ($params{values} || $params{set}) {
+        my $set = $params{values} || $params{set};
         my @columns;
-        while (my ($key, $value) = splice @{$params{values}}, 0, 2) {
-            push @columns, $key;
-            push @bind,    $value;
+
+        if (ref $set eq 'HASH') {
+            while (my ($key, $value) = each %$set) {
+                push @columns, $key;
+                push @bind,    $value;
+            }
+        }
+        else {
+            while (my ($key, $value) = splice @{$set}, 0, 2) {
+                push @columns, $key;
+                push @bind,    $value;
+            }
         }
 
         $sql .= ' SET ';

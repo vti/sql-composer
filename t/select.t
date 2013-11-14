@@ -14,6 +14,8 @@ subtest 'build simple' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is_deeply $expr->from_rows([['c', 'd']]), [{a => 'c', b => 'd'}];
 };
 
 subtest 'build column as' => sub {
@@ -27,6 +29,8 @@ subtest 'build column as' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is_deeply $expr->from_rows([['c']]), [{bar => 'c'}];
 };
 
 subtest 'build column as is' => sub {
@@ -38,6 +42,8 @@ subtest 'build column as is' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is_deeply $expr->from_rows([['c']]), [{'COUNT(*)' => 'c'}];
 };
 
 subtest 'build column as with as is' => sub {
@@ -51,6 +57,8 @@ subtest 'build column as with as is' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is_deeply $expr->from_rows([['c']]), [{'count' => 'c'}];
 };
 
 subtest 'build with where' => sub {
@@ -141,15 +149,18 @@ subtest 'build with limit and offset' => sub {
 subtest 'build with join' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',
-        columns => ['a', 'b'],
-        join    => {source => 'table', on => [a => 'b']}
+        columns => ['a'],
+        join    => {source => 'table2', columns => ['b'], on => [a => '1']}
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ?';
+    is $sql, 'SELECT `a`,`table2`.`b` FROM `table` JOIN `table2` ON `a` = ?';
 
     my @bind = $expr->to_bind;
-    is_deeply \@bind, ['b'];
+    is_deeply \@bind, ['1'];
+
+    is_deeply $expr->from_rows([['c', 'd']]),
+      [{a => 'c', table2 => {b => 'd'}}];
 };
 
 subtest 'build with multiple joins' => sub {
@@ -163,11 +174,36 @@ subtest 'build with multiple joins' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql,
-'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
+    is $sql, 'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'd'];
+};
+
+subtest 'build with deep joins' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a'],
+        join    => {
+            source  => 'table2',
+            columns => ['b'],
+            on      => [a => '1'],
+            join    => {
+                source  => 'table3',
+                columns => ['c'],
+                on      => [b => '2']
+            }
+        }
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `a`,`table2`.`b`,`table3`.`c` FROM `table` JOIN `table2` ON `a` = ? JOIN `table3` ON `b` = ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['1', '2'];
+
+    is_deeply $expr->from_rows([['c', 'd', 'e']]),
+      [{a => 'c', table2 => {b => 'd', table3 => {c => 'e'}}}];
 };
 
 done_testing;

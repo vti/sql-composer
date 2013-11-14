@@ -28,4 +28,16 @@ sub quote {
     return join $self->{name_separator}, @parts;
 }
 
+sub split {
+    my $self = shift;
+    my ($quoted_column) = @_;
+
+    my ($table, $column) = split /\Q$self->{name_separator}\E/, $quoted_column;
+    ($column, $table) = ($table, '') unless $column;
+
+    return
+      map { s/^\Q$self->{quote_char}\E//; s/\Q$self->{quote_char}\E$//; $_ }
+      ($table, $column);
+}
+
 1;
