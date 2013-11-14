@@ -55,16 +55,22 @@ sub _build_subexpr {
             my ($op)       = keys %$value;
             my ($subvalue) = values %$value;
 
-            my ($_value, $_bind) = $self->_build_value($subvalue);
+            if ($op eq '-col') {
+                push @parts,
+                  $self->_quote(1, $key) . ' = ' . $self->_quote(1, $subvalue);
+            }
+            else {
+                my ($_value, $_bind) = $self->_build_value($subvalue);
 
-            push @parts, $self->_quote($quote, $key) . " $op $_value";
-            push @bind,  @$_bind;
+                push @parts, $self->_quote($quote, $key) . " $op $_value";
+                push @bind, @$_bind;
+            }
         }
         elsif (defined $value) {
             my ($_value, $_bind) = $self->_build_value($value);
 
             push @parts, $self->_quote($quote, $key) . " = $_value";
-            push @bind,  @$_bind;
+            push @bind, @$_bind;
         }
         else {
             push @parts, $key;
@@ -93,6 +99,17 @@ sub _build_value {
         if (ref $$value eq 'ARRAY') {
             $sql = $$value->[0];
             push @bind, @$$value[1 .. $#{$$value}];
+        }
+        else {
+            Carp::croak('unexpected reference');
+        }
+    }
+    elsif (ref($value) eq 'HASH') {
+        my ($key)      = keys %$value;
+        my ($subvalue) = values %$value;
+
+        if ($key eq '-col') {
+            $sql = $self->_quote(1, $subvalue);
         }
         else {
             Carp::croak('unexpected reference');

@@ -45,6 +45,16 @@ subtest 'build simple' => sub {
     is_deeply \@bind, ['b'];
 };
 
+subtest 'build with column' => sub {
+    my $expr = SQL::Builder::Expression->new(expr => [a => {'-col' => 'b'}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` = `b`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with changed op' => sub {
     my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => 'b'}]);
 
@@ -53,6 +63,16 @@ subtest 'build with changed op' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
+};
+
+subtest 'build with column and changed op' => sub {
+    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => {'-col' => 'b'}}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` > `b`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
 };
 
 subtest 'build as is' => sub {
