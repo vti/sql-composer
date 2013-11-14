@@ -47,10 +47,10 @@ sub new {
         $sql .= $self->_quote($params{source}) . ' ';
     }
 
-    if ($params{on}) {
+    if (my $constraint = $params{on}) {
         my $expr = SQL::Builder::Expression->new(
             quoter => $self->{quoter},
-            expr   => $params{on}
+            expr   => $constraint
         );
         $sql .= 'ON ' . $expr->to_sql;
         push @bind, $expr->to_bind;
