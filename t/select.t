@@ -163,6 +163,23 @@ subtest 'build with join' => sub {
       [{a => 'c', table2 => {b => 'd'}}];
 };
 
+subtest 'build with join and prefix' => sub {
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a'],
+        join    => {source => 'table2', as => 'new_table2', columns => ['b'], on => [a => '1']}
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`new_table2`.`b` FROM `table` JOIN `table2` AS `new_table2` ON `a` = ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['1'];
+
+    is_deeply $expr->from_rows([['c', 'd']]),
+      [{a => 'c', table2 => {b => 'd'}}];
+};
+
 subtest 'build with multiple joins' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',

@@ -22,29 +22,10 @@ sub new {
     $sql .= uc($params{op}) . ' ' if $params{op};
     $sql .= 'JOIN ';
 
-    if (ref $params{source} eq 'HASH') {
-        my ($source)  = keys %{$params{source}};
-        my ($options) = values %{$params{source}};
+    $sql .= $self->_quote($params{source}) . ' ';
 
-        $sql .= $self->_quote($source);
-
-        if (ref $options eq 'HASH') {
-            my ($key)   = keys %{$options};
-            my ($value) = values %{$options};
-
-            if ($key eq '-as') {
-                $sql .= ' AS ' . $self->_quote($value) . ' ';
-            }
-            else {
-                Carp::croak('unknown option');
-            }
-        }
-        else {
-            Carp::croak('unknown reference');
-        }
-    }
-    else {
-        $sql .= $self->_quote($params{source}) . ' ';
+    if (my $as = $params{as}) {
+        $sql .= 'AS ' . $self->_quote($as) . ' ';
     }
 
     if (my $constraint = $params{on}) {

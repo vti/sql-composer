@@ -48,8 +48,8 @@ sub new {
     if ($params{where}) {
         my $expr = SQL::Builder::Expression->new(
             default_prefix => $self->{from},
-            quoter => $self->{quoter},
-            expr   => $params{where}
+            quoter         => $self->{quoter},
+            expr           => $params{where}
         );
         $sql .= ' WHERE ' . $expr->to_sql;
         push @bind, $expr->to_bind;
@@ -175,9 +175,12 @@ sub _collect_columns_from_joins {
     my @join_columns;
     foreach my $join_params (@$joins) {
         if (my $join_columns = $join_params->{columns}) {
-            push @join_columns,
-              map { $self->_prepare_column($_, $join_params->{source}) }
-              @$join_columns;
+            push @join_columns, map {
+                $self->_prepare_column($_,
+                      $join_params->{as}
+                    ? $join_params->{as}
+                    : $join_params->{source})
+            } @$join_columns;
         }
 
         if (my $subjoins = $join_params->{join}) {
