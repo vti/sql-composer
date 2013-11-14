@@ -23,7 +23,8 @@ sub new {
 
     $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
 
-    my @columns = @{$self->{columns}};
+    my @columns =
+      map { $self->_prepare_column($_, $self->{from}) } @{$self->{columns}};
     push @columns, $self->_collect_columns_from_joins($self->{join});
 
     my $sql = '';
@@ -32,24 +33,7 @@ sub new {
     $sql .= 'SELECT ';
 
     if (@columns) {
-        my @values;
-
-        foreach my $column (@columns) {
-            if (ref $column eq 'SCALAR') {
-                push @values, $$column;
-            }
-            elsif (ref $column eq 'HASH') {
-                push @values,
-                  (
-                    ref($column->{-col})
-                    ? ${$column->{-col}}
-                    : $self->_quote($column->{-col}))
-                  . ' AS '
-                  . $self->_quote($column->{-as});
-            }
-            else { push @values, $self->_quote($column); }
-        }
-        $sql .= join ',', @values;
+        $sql .= join ',', @columns;
     }
 
     $sql .= ' FROM ';
@@ -63,6 +47,7 @@ sub new {
 
     if ($params{where}) {
         my $expr = SQL::Builder::Expression->new(
+            default_prefix => $self->{from},
             quoter => $self->{quoter},
             expr   => $params{where}
         );
@@ -124,6 +109,27 @@ sub from_rows {
     return $result;
 }
 
+sub _prepare_column {
+    my $self = shift;
+    my ($column, $prefix) = @_;
+
+    if (ref $column eq 'SCALAR') {
+        return $$column;
+    }
+    elsif (ref $column eq 'HASH') {
+        return (
+            ref($column->{-col})
+            ? ${$column->{-col}}
+            : $self->_quote($column->{-col}, $prefix)
+          )
+          . ' AS '
+          . $self->_quote($column->{-as});
+    }
+    else {
+        return $self->_quote($column, $prefix);
+    }
+}
+
 sub _populate {
     my $self = shift;
     my ($set, $row, $columns) = @_;
@@ -154,7 +160,8 @@ sub _populate_joins {
 
         if (my $subjoin = $join->{join}) {
             $set->{$join->{source}}->{$subjoin->{source}} ||= {};
-            $self->_populate($set->{$join->{source}}->{$subjoin->{source}}, $row, $subjoin->{columns});
+            $self->_populate($set->{$join->{source}}->{$subjoin->{source}},
+                $row, $subjoin->{columns});
         }
     }
 }
@@ -169,7 +176,8 @@ sub _collect_columns_from_joins {
     foreach my $join_params (@$joins) {
         if (my $join_columns = $join_params->{columns}) {
             push @join_columns,
-              map { "$join_params->{source}.$_" } @$join_columns;
+              map { $self->_prepare_column($_, $join_params->{source}) }
+              @$join_columns;
         }
 
         if (my $subjoins = $join_params->{join}) {
@@ -209,9 +217,9 @@ sub _build_join {
 
 sub _quote {
     my $self = shift;
-    my ($column) = @_;
+    my ($column, $prefix) = @_;
 
-    return $self->{quoter}->quote($column);
+    return $self->{quoter}->quote($column, $prefix);
 }
 
 1;

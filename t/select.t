@@ -10,7 +10,7 @@ subtest 'build simple' => sub {
       SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table`';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -25,7 +25,7 @@ subtest 'build column as' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `foo` AS `bar` FROM `table`';
+    is $sql, 'SELECT `table`.`foo` AS `bar` FROM `table`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -69,7 +69,7 @@ subtest 'build with where' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` WHERE `a` = ?';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` WHERE `table`.`a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
@@ -83,7 +83,7 @@ subtest 'build with order by' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo`';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `foo`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -97,7 +97,7 @@ subtest 'build with order by with order' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo` DESC';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `foo` DESC';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -111,7 +111,7 @@ subtest 'build with order by multi' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` ORDER BY `foo` DESC,`bar` ASC';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `foo` DESC,`bar` ASC';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -125,7 +125,7 @@ subtest 'build with limit' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` LIMIT 5';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` LIMIT 5';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -140,7 +140,7 @@ subtest 'build with limit and offset' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` LIMIT 5 OFFSET 10';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` LIMIT 5 OFFSET 10';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -154,7 +154,7 @@ subtest 'build with join' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`table2`.`b` FROM `table` JOIN `table2` ON `a` = ?';
+    is $sql, 'SELECT `table`.`a`,`table2`.`b` FROM `table` JOIN `table2` ON `a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['1'];
@@ -174,7 +174,7 @@ subtest 'build with multiple joins' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'd'];
@@ -197,7 +197,7 @@ subtest 'build with deep joins' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `a`,`table2`.`b`,`table3`.`c` FROM `table` JOIN `table2` ON `a` = ? JOIN `table3` ON `b` = ?';
+    is $sql, 'SELECT `table`.`a`,`table2`.`b`,`table3`.`c` FROM `table` JOIN `table2` ON `a` = ? JOIN `table3` ON `b` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['1', '2'];

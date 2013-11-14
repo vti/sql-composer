@@ -18,22 +18,18 @@ sub new {
 
 sub quote {
     my $self = shift;
-    my ($column) = @_;
+    my ($column, $prefix) = @_;
 
     my @parts = split /\Q$self->{name_separator}\E/, $column;
     foreach my $part (@parts) {
         $part = $self->{quote_char} . $part . $self->{quote_char};
     }
 
+    if ($prefix && @parts == 1) {
+        unshift @parts, $self->{quote_char} . $prefix . $self->{quote_char};
+    }
+
     return join $self->{name_separator}, @parts;
-}
-
-sub concat {
-    my $self = shift;
-    my ($prefix, $column) = @_;
-
-    return join $self->{name_separator},
-      map { $self->quote($_) } ($prefix, $column);
 }
 
 sub split {

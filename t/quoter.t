@@ -11,6 +11,18 @@ subtest 'quote simple column' => sub {
     is $quoter->quote('foo'), '`foo`';
 };
 
+subtest 'quote with prefix' => sub {
+    my $quoter = SQL::Builder::Quoter->new();
+
+    is $quoter->quote('foo', 'prefix'), '`prefix`.`foo`';
+};
+
+subtest 'not add prefix when already prefixed' => sub {
+    my $quoter = SQL::Builder::Quoter->new();
+
+    is $quoter->quote('prefixed.foo', 'prefix'), '`prefixed`.`foo`';
+};
+
 subtest 'quote column with table' => sub {
     my $quoter = SQL::Builder::Quoter->new();
 
@@ -42,12 +54,6 @@ subtest 'return only column' => sub {
       SQL::Builder::Quoter->new(quote_char => '"', name_separator => ':');
 
     is_deeply [$quoter->split('foo')], ['', 'foo'];
-};
-
-subtest 'concat' => sub {
-    my $quoter = SQL::Builder::Quoter->new();
-
-    is $quoter->concat('table', 'foo'), '`table`.`foo`';
 };
 
 done_testing;

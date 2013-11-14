@@ -16,6 +16,8 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{default_prefix} = $params{default_prefix};
+
     $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
 
     my ($sql, $bind) = $self->_build_subexpr('-and', $expr);
@@ -132,7 +134,7 @@ sub _quote {
 
     return $column unless $yes;
 
-    return $self->{quoter}->quote($column);
+    return $self->{quoter}->quote($column, $self->{default_prefix});
 }
 
 1;
