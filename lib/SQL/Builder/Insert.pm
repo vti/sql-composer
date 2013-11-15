@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 require Carp;
+use SQL::Builder::Quoter;
 
 sub new {
     my $class = shift;
@@ -12,20 +13,22 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+
     my $sql = '';
     my @bind;
 
     $sql .= 'INSERT INTO ';
 
-    $sql .= $params{into};
+    $sql .= $self->_quote($params{into});
 
     if ($params{values}) {
         my @columns;
         while (my ($key, $value) = splice @{$params{values}}, 0, 2) {
             push @columns, $key;
-            push @bind, $value;
+            push @bind,    $value;
         }
-        $sql .= ' (' . (join ',', @columns) . ')';
+        $sql .= ' (' . (join ',', map { $self->_quote($_) } @columns) . ')';
         $sql .= ' VALUES (';
         $sql .= join ',', split //, '?' x @columns;
         $sql .= ')';
@@ -39,5 +42,12 @@ sub new {
 
 sub to_sql { shift->{sql} }
 sub to_bind { @{shift->{bind} || []} }
+
+sub _quote {
+    my $self = shift;
+    my ($column, $prefix) = @_;
+
+    return $self->{quoter}->quote($column, $prefix);
+}
 
 1;

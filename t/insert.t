@@ -10,7 +10,7 @@ subtest 'build simple' => sub {
       SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
 
     my $sql = $expr->to_sql;
-    is $sql, 'INSERT INTO table (foo) VALUES (?)';
+    is $sql, 'INSERT INTO `table` (`foo`) VALUES (?)';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['bar'];

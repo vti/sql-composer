@@ -7,6 +7,7 @@ require Carp;
 use Scalar::Util ();
 use SQL::Builder::Join;
 use SQL::Builder::Expression;
+use SQL::Builder::Quoter;
 
 sub new {
     my $class = shift;
