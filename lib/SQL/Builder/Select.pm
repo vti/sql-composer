@@ -62,6 +62,10 @@ sub new {
         }
     }
 
+    if (my $group_by = $params{group_by}) {
+        $sql .= ' GROUP BY ' . $self->_quote($group_by, $self->{from});
+    }
+
     if (my $order_by = $params{order_by}) {
         $sql .= ' ORDER BY ';
         if (ref $order_by) {
