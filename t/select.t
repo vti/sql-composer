@@ -150,11 +150,11 @@ subtest 'build with join' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',
         columns => ['a'],
-        join    => {source => 'table2', columns => ['b'], on => [a => '1']}
+        join    => {source => 'table2', columns => ['b'], on => ['table.a' => '1']}
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`table2`.`b` FROM `table` JOIN `table2` ON `a` = ?';
+    is $sql, 'SELECT `table`.`a`,`table2`.`b` FROM `table` JOIN `table2` ON `table`.`a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['1'];
@@ -167,11 +167,11 @@ subtest 'build with join and prefix' => sub {
     my $expr = SQL::Builder::Select->new(
         from    => 'table',
         columns => ['a'],
-        join    => {source => 'table2', as => 'new_table2', columns => ['b'], on => [a => '1']}
+        join    => {source => 'table2', as => 'new_table2', columns => ['b'], on => ['table.a' => '1']}
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`new_table2`.`b` FROM `table` JOIN `table2` AS `new_table2` ON `a` = ?';
+    is $sql, 'SELECT `table`.`a`,`new_table2`.`b` FROM `table` JOIN `table2` AS `new_table2` ON `table`.`a` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['1'];
@@ -185,13 +185,13 @@ subtest 'build with multiple joins' => sub {
         from    => 'table',
         columns => ['a', 'b'],
         join    => [
-            {source => 'table', on => [a => 'b']},
-            {source => 'table', on => [c => 'd']}
+            {source => 'table2', on => ['table.a' => 'b']},
+            {source => 'table3', on => ['table.c' => 'd']}
         ]
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` JOIN `table` ON `a` = ? JOIN `table` ON `c` = ?';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` JOIN `table2` ON `table`.`a` = ? JOIN `table3` ON `table`.`c` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'd'];
@@ -214,7 +214,7 @@ subtest 'build with deep joins' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`table2`.`b`,`table3`.`c` FROM `table` JOIN `table2` ON `a` = ? JOIN `table3` ON `b` = ?';
+    is $sql, 'SELECT `table`.`a`,`table2`.`b`,`table3`.`c` FROM `table` JOIN `table2` ON `table2`.`a` = ? JOIN `table3` ON `table3`.`b` = ?';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['1', '2'];

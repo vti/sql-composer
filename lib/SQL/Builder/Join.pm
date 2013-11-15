@@ -14,7 +14,9 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter}
+      || SQL::Builder::Quoter->new(default_prefix => $params{as}
+          || $params{source});
 
     my $sql = '';
     my @bind;
@@ -30,8 +32,9 @@ sub new {
 
     if (my $constraint = $params{on}) {
         my $expr = SQL::Builder::Expression->new(
-            quoter => $self->{quoter},
-            expr   => $constraint
+            default_prefix => $params{as} || $params{source},
+            quoter         => $self->{quoter},
+            expr           => $constraint
         );
         $sql .= 'ON ' . $expr->to_sql;
         push @bind, $expr->to_bind;
