@@ -94,6 +94,10 @@ sub new {
         $sql .= ' OFFSET ' . $offset;
     }
 
+    if ($params{for_update}) {
+        $sql .= ' FOR UPDATE';
+    }
+
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
 

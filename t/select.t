@@ -271,4 +271,15 @@ subtest 'build with deep joins' => sub {
       [{a => 'c', table2 => {b => 'd', table3 => {c => 'e'}}}];
 };
 
+subtest 'build with for update' => sub {
+    my $expr =
+      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b'], for_update => 1);
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` FOR UPDATE';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 done_testing;
