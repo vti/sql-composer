@@ -5,10 +5,22 @@ use warnings;
 
 our $VERSION = '0.01';
 
+require Carp;
 use SQL::Builder::Select;
 use SQL::Builder::Insert;
 use SQL::Builder::Delete;
 use SQL::Builder::Update;
+
+$Carp::Internal{(__PACKAGE__)}++;
+$Carp::Internal{"SQL::Builder::$_"}++ for qw/
+  Select
+  Insert
+  Delete
+  Update
+  Expression
+  Join
+  Quoter
+  /;
 
 sub build {
     my $class = shift;
