@@ -97,7 +97,7 @@ subtest 'build with order by with order' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `foo` DESC';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo` DESC';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
@@ -111,7 +111,7 @@ subtest 'build with order by multi' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `foo` DESC,`bar` ASC';
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo` DESC,`table`.`bar` ASC';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];

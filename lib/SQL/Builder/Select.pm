@@ -68,7 +68,7 @@ sub new {
             if (ref($order_by) eq 'ARRAY') {
                 my @order;
                 while (my ($key, $value) = splice @$order_by, 0, 2) {
-                    push @order, $self->_quote($key) . ' ' . uc($value);
+                    push @order, $self->_quote($key, $self->{from}) . ' ' . uc($value);
                 }
                 $sql .= join ',', @order;
             }
