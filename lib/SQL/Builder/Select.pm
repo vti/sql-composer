@@ -165,10 +165,13 @@ sub _populate_joins {
         $set->{$join->{source}} ||= {};
         $self->_populate($set->{$join->{source}}, $row, $join->{columns});
 
-        if (my $subjoin = $join->{join}) {
-            $set->{$join->{source}}->{$subjoin->{source}} ||= {};
-            $self->_populate($set->{$join->{source}}->{$subjoin->{source}},
-                $row, $subjoin->{columns});
+        if (my $subjoins = $join->{join}) {
+            $subjoins = [$subjoins] unless ref $subjoins eq 'ARRAY';
+            foreach my $subjoin (@$subjoins) {
+                $set->{$join->{source}}->{$subjoin->{source}} ||= {};
+                $self->_populate($set->{$join->{source}}->{$subjoin->{source}},
+                    $row, $subjoin->{columns});
+            }
         }
     }
 }

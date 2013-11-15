@@ -17,8 +17,8 @@ subtest 'build simple' => sub {
 subtest 'build simple with as' => sub {
     my $expr = SQL::Builder::Join->new(
         source => 'table',
-        as => 'another_table',
-        on     => [a       => 'b']
+        as     => 'another_table',
+        on     => [a => 'b']
     );
 
     my $sql = $expr->to_sql;
