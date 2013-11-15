@@ -12,6 +12,7 @@ sub new {
 
     $self->{quote_char}     = $params{quote_char}     ||= '`';
     $self->{name_separator} = $params{name_separator} ||= '.';
+    $self->{quote_string_char}     = $params{quote_string_char}     ||= "'";
 
     return $self;
 }
@@ -30,6 +31,15 @@ sub quote {
     }
 
     return join $self->{name_separator}, @parts;
+}
+
+sub quote_string {
+    my $self = shift;
+    my ($string) = @_;
+
+    $string =~ s{$self->{quote_string_char}}{\\$self->{quote_string_char}}g;
+
+    return $self->{quote_string_char} . $string . $self->{quote_string_char};
 }
 
 sub split {

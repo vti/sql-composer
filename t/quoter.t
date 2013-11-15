@@ -56,4 +56,16 @@ subtest 'return only column' => sub {
     is_deeply [$quoter->split('foo')], ['', 'foo'];
 };
 
+subtest 'quote string' => sub {
+    my $quoter = SQL::Builder::Quoter->new();
+
+    is $quoter->quote_string('foo'), q{'foo'};
+};
+
+subtest 'quote string with quotes' => sub {
+    my $quoter = SQL::Builder::Quoter->new();
+
+    is $quoter->quote_string(q{fo'o}), q{'fo\'o'};
+};
+
 done_testing;

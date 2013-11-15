@@ -24,13 +24,36 @@ sub new {
 
     if ($params{values}) {
         my @columns;
+        my @values;
         while (my ($key, $value) = splice @{$params{values}}, 0, 2) {
             push @columns, $key;
-            push @bind,    $value;
+
+            if (ref $value) {
+                if (ref $value eq 'SCALAR') {
+                    push @values, $$value;
+                }
+                elsif (ref $value eq 'REF') {
+                    if (ref $$value eq 'ARRAY') {
+                        push @values, $$value->[0];
+                        push @bind,   @$$value[1 .. $#{$$value}];
+                    }
+                    else {
+                        Carp::croak('unexpected reference');
+                    }
+                }
+                else {
+                    Carp::croak('unexpected reference');
+                }
+            }
+            else {
+                push @values, '?';
+                push @bind,   $value;
+            }
         }
+
         $sql .= ' (' . (join ',', map { $self->_quote($_) } @columns) . ')';
         $sql .= ' VALUES (';
-        $sql .= join ',', split //, '?' x @columns;
+        $sql .= join ',', @values;
         $sql .= ')';
     }
 
