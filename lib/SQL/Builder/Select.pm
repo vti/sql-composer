@@ -68,7 +68,8 @@ sub new {
             if (ref($order_by) eq 'ARRAY') {
                 my @order;
                 while (my ($key, $value) = splice @$order_by, 0, 2) {
-                    push @order, $self->_quote($key, $self->{from}) . ' ' . uc($value);
+                    push @order,
+                      $self->_quote($key, $self->{from}) . ' ' . uc($value);
                 }
                 $sql .= join ',', @order;
             }
@@ -162,14 +163,18 @@ sub _populate_joins {
     my ($set, $row, $joins) = @_;
 
     foreach my $join (@$joins) {
-        $set->{$join->{source}} ||= {};
-        $self->_populate($set->{$join->{source}}, $row, $join->{columns});
+        my $join_source = $join->{as} || $join->{source};
+
+        $set->{$join_source} ||= {};
+        $self->_populate($set->{$join_source}, $row, $join->{columns});
 
         if (my $subjoins = $join->{join}) {
             $subjoins = [$subjoins] unless ref $subjoins eq 'ARRAY';
             foreach my $subjoin (@$subjoins) {
-                $set->{$join->{source}}->{$subjoin->{source}} ||= {};
-                $self->_populate($set->{$join->{source}}->{$subjoin->{source}},
+                my $subjoin_source = $subjoin->{as} || $subjoin->{source};
+
+                $set->{$join_source}->{$subjoin_source} ||= {};
+                $self->_populate($set->{$join_source}->{$subjoin_source},
                     $row, $subjoin->{columns});
             }
         }
