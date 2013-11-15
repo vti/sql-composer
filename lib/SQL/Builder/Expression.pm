@@ -10,7 +10,7 @@ sub new {
     my $class = shift;
     my (%params) = @_;
 
-    my $expr = $params{expr};
+    my $expr = $params{expr} || [];
     $expr = [$expr] unless ref $expr eq 'ARRAY';
 
     my $self = {};

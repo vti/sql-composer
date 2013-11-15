@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 require Carp;
+use Scalar::Util ();
 use SQL::Builder::Join;
 use SQL::Builder::Expression;
 
@@ -45,14 +46,19 @@ sub new {
         push @bind, @$join_bind;
     }
 
-    if ($params{where}) {
-        my $expr = SQL::Builder::Expression->new(
-            default_prefix => $self->{from},
-            quoter         => $self->{quoter},
-            expr           => $params{where}
-        );
-        $sql .= ' WHERE ' . $expr->to_sql;
-        push @bind, $expr->to_bind;
+    if (my $where = $params{where}) {
+        if (!Scalar::Util::blessed($where)) {
+            $where = SQL::Builder::Expression->new(
+                default_prefix => $self->{from},
+                quoter         => $self->{quoter},
+                expr           => $where
+            );
+        }
+
+        if (my $where_sql = $where->to_sql) {
+            $sql .= ' WHERE ' . $where_sql;
+            push @bind, $where->to_bind;
+        }
     }
 
     if (my $order_by = $params{order_by}) {
