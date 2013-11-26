@@ -71,7 +71,8 @@ sub _build_subexpr {
         elsif (defined $value) {
             my ($_value, $_bind) = $self->_build_value($value);
 
-            push @parts, $self->_quote($quote, $key) . " = $_value";
+            my $op = ref($value) && ref($value) eq 'ARRAY' ? '' : '= ';
+            push @parts, $self->_quote($quote, $key) . " $op$_value";
             push @bind, @$_bind;
         }
         else {

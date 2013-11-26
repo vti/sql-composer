@@ -66,7 +66,8 @@ subtest 'build with changed op' => sub {
 };
 
 subtest 'build with column and changed op' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => {'-col' => 'b'}}]);
+    my $expr =
+      SQL::Builder::Expression->new(expr => [a => {'>' => {'-col' => 'b'}}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` > `b`';
@@ -131,7 +132,7 @@ subtest 'build in' => sub {
     my $expr = SQL::Builder::Expression->new(expr => [a => ['b', 'c', 'd']]);
 
     my $sql = $expr->to_sql;
-    is $sql, '`a` = IN (?,?,?)';
+    is $sql, '`a` IN (?,?,?)';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'c', 'd'];
