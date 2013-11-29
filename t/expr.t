@@ -45,6 +45,13 @@ subtest 'build simple' => sub {
     is_deeply \@bind, ['b'];
 };
 
+subtest 'not modify original data' => sub {
+    my $where = [a => 'b'];
+    my $expr = SQL::Builder::Expression->new(expr => $where);
+
+    is_deeply $where, [a => 'b'];
+};
+
 subtest 'build with column' => sub {
     my $expr = SQL::Builder::Expression->new(expr => [a => {'-col' => 'b'}]);
 

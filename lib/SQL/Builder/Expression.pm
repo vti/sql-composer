@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 require Carp;
+use Storable ();
 use SQL::Builder::Quoter;
 
 sub new {
@@ -31,6 +32,8 @@ sub new {
 sub _build_subexpr {
     my $self = shift;
     my ($op, $params) = @_;
+
+    $params = Storable::dclone($params);
 
     $op = uc $op;
     $op =~ s{-}{};
