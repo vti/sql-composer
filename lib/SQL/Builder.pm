@@ -167,4 +167,10 @@ For more details see L<SQL::Builder::Select>.
 
 Viacheslav Tykhanovskyi
 
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2013, Viacheslav Tykhanovskyi.
+
+This module is free software, you may distribute it under the same terms as Perl.
+
 =cut

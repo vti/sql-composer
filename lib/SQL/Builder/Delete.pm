@@ -49,3 +49,19 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1
+
+SQL::Builder::Delete - DELETE statement
+
+=head1 SYNOPSIS
+
+    my $delete = SQL::Builder::Delete->new(from => 'table', where => [a => 'b']);
+
+    my $sql = $delete->to_sql;   # 'DELETE FROM `table` WHERE `a` = ?'
+    my @bind = $delete->to_bind; # ['b']
+
+=cut

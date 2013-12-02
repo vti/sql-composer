@@ -142,3 +142,75 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1 NAME
+
+SQL::Builder - sql builder
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head2 Raw SQL
+
+    my $expr = SQL::Builder::Expression->new(expr => \'a = b');
+
+    my $sql = $expr->to_sql;   # 'a = b'
+    my @bind = $expr->to_bind; # []
+
+=head2 Raw SQL with bind
+
+    my $expr = SQL::Builder::Expression->new(expr => \['a = ?', 'b']);
+
+    my $sql = $expr->to_sql;   # 'a = ?'
+    my @bind = $expr->to_bind; # 'b'
+
+=head2 Simple SQL
+
+    my $expr = SQL::Builder::Expression->new(expr => [a => 'b']);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` = ?';
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['b'];
+
+=head2 Expression with custom operator
+
+    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => 'b'}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` > ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['b'];
+
+=head2 Expression with column name
+
+    my $expr = SQL::Builder::Expression->new(expr => [a => {'-col' => 'b'}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` = `b`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+
+=head2 Mixed logical expression
+
+    my $expr =
+      SQL::Builder::Expression->new(
+        expr => [-or => [a => 'b', -and => [c => 'd', 'e' => 'f']]]);
+
+    my $sql = $expr->to_sql;   # '(`a` = ? OR (`c` = ? AND `e` = ?))'
+    my @bind = $expr->to_bind; # ['b', 'd', 'f']
+
+=head2 C<IN>
+
+    my $expr = SQL::Builder::Expression->new(expr => [a => ['b', 'c', 'd']]);
+
+    my $sql = $expr->to_sql;   # '`a` IN (?,?,?)'
+    my @bind = $expr->to_bind; # ['b', 'c', 'd']
+
+=cut

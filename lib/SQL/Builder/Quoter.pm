@@ -55,3 +55,16 @@ sub split {
 }
 
 1;
+__END__
+
+=pod
+
+=head1 NAME
+
+SQL::Builder::Quoter - internal SQL quotation
+
+=head1 DESCRIPTION
+
+Used internally.
+
+=cut

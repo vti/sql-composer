@@ -249,3 +249,157 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1
+
+SQL::Builder::Select - SELECT statement
+
+=head1 SYNOPSIS
+
+    my $expr =
+      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
+
+    my $sql = $expr->to_sql;        # 'SELECT `table`.`a`,`table`.`b` FROM `table`'
+    my @bind = $expr->to_bind;      # []
+
+    $expr->from_rows([['c', 'd']]); # [{a => 'c', b => 'd'}]
+
+=head1 DESCRIPTION
+
+Builds C<SELECT> statement and converts (C<from_rows()>) received arrayref data
+to hashref with appropriate column names as keys and joins as nested values.
+
+=head2 Select column with C<AS>
+
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => [{-col => 'foo' => -as => 'bar'}]
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`foo` AS `bar` FROM `table`'
+    my @bind = $expr->to_bind; # []
+    $expr->from_rows([['c']]); # [{bar => 'c'}]
+
+=head2 Select column with raw SQL
+
+    my $expr =
+      SQL::Builder::Select->new(from => 'table', columns => [\'COUNT(*)']);
+
+    my $sql = $expr->to_sql;   # 'SELECT COUNT(*) FROM `table`'
+    my @bind = $expr->to_bind; # [];
+    $expr->from_rows([['c']]); # [{'COUNT(*)' => 'c'}]
+
+=head2 Select with C<WHERE>
+
+For more details see L<SQL::Builder::Expression>.
+
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        where   => [a => 'b']
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #        FROM `table` WHERE `table`.`a` = ?'
+    my @bind = $expr->to_bind; # ['b']
+
+=head2 C<GROUP BY>
+
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        group_by => 'a'
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #        FROM `table` GROUP BY `table`.`a`'
+    my @bind = $expr->to_bind; # []
+
+=head2 C<ORDER BY>
+
+    my $expr = SQL::Builder::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => 'foo'
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #        FROM `table` ORDER BY `foo`'
+    my @bind = $expr->to_bind; # []
+
+=head2 C<ORDER BY> with sorting order
+
+    my $expr = SQL::Builder::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => [foo => 'desc', bar => 'asc']
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #      FROM `table`
+                               #      ORDER BY `table`.`foo` DESC,
+                               #               `table`.`bar` ASC'
+    my @bind = $expr->to_bind; # []
+
+=head2 C<LIMIT> and C<OFFSET>
+
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        limit   => 5,
+        offset  => 10
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #        FROM `table` LIMIT 5 OFFSET 10'
+    my @bind = $expr->to_bind; # [];
+
+=head2 C<JOIN>
+
+For more details see L<SQL::Builder::Join>.
+
+    my $expr = SQL::Builder::Select->new(
+        from    => 'table',
+        columns => ['a'],
+        join    => [
+            {
+                source  => 'table2',
+                columns => ['b'],
+                on      => [a => '1'],
+                join    => [
+                    {
+                        source  => 'table3',
+                        columns => ['c'],
+                        on      => [b => '2']
+                    }
+                ]
+            }
+        ]
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table2`.`b`,`table3`.`c
+                               #    FROM `table`
+                               #    JOIN `table2` ON `table2`.`a` = ?
+                               #    JOIN `table3` ON `table3`.`b` = ?'
+    my @bind = $expr->to_bind; # ['1', '2'];
+
+    $expr->from_rows([['c', 'd', 'e']]);
+    # [{a => 'c', table2 => {b => 'd', table3 => {c => 'e'}}}];
+
+=head2 C<FOR UPDATE>
+
+    my $expr = SQL::Builder::Select->new(
+        from       => 'table',
+        columns    => ['a', 'b'],
+        for_update => 1
+    );
+
+    my $sql = $expr->to_sql;   # 'SELECT `table`.`a`,`table`.`b`
+                               #    FROM `table` FOR UPDATE'
+    my @bind = $expr->to_bind; # []
+};
+
+=cut

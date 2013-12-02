@@ -70,3 +70,23 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1
+
+SQL::Builder::Update - UPDATE statement
+
+=head1 SYNOPSIS
+
+    my $expr = SQL::Builder::Update->new(
+        table  => 'table',
+        values => [a => 'b'],
+        where  => [c => 'd']
+    );
+
+    my $sql = $expr->to_sql;   # 'UPDATE `table` SET `a` = ? WHERE `c` = ?'
+    my @bind = $expr->to_bind; # ['b', 'd']
+
+=cut

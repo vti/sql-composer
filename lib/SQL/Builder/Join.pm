@@ -60,3 +60,25 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1 NAME
+
+SQL::Builder::Join - build joins
+
+=head1 SYNOPSIS
+
+    my $join = SQL::Builder::Join->new(source => 'table', on => [a => 'b']);
+
+    my $sql = $join->to_sql;   # 'JOIN `table` ON `table`.`a` = ?'
+    my @bind = $expr->to_bind; # ['b']
+
+=head1 DESCRIPTION
+
+Accepts and builds join statement using these parameters:
+
+    <op> JOIN <source> AS <as> ( ON <on> | <USING> )
+
+=cut

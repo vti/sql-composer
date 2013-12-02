@@ -74,3 +74,20 @@ sub _quote {
 }
 
 1;
+__END__
+
+=pod
+
+=head1
+
+SQL::Builder::Insert - INSERT statement
+
+=head1 SYNOPSIS
+
+    my $insert =
+      SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
+
+    my $sql = $insert->to_sql;   # 'INSERT INTO `table` (`foo`) VALUES (?)'
+    my @bind = $insert->to_bind; # ['bar']
+
+=cut
