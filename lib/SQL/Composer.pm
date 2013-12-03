@@ -84,10 +84,9 @@ SQL::Composer - sql builder
 
 =head1 DESCRIPTION
 
-L<SQL::Composer> is a SQL builder and rows parser in one module. It behaves very
-close to L<SQL::Abstract> or similar modules but allows deep joins and automatic
-convertion from arrayref to a hashref, keeping the nested join structure if
-needed.
+L<SQL::Composer> is a SQL builder and rows parser in one module. It allows deep
+joins and automatic convertion from arrayref to a hashref, keeping the nested
+join structure if needed.
 
 This module itself is just a factory for the common SQL statements: C<SELECT>,
 C<DELETE>, C<INSERT> and C<UPDATE>.
@@ -162,6 +161,10 @@ For more details see L<SQL::Composer::Select>.
     my @bind = $expr->to_bind; # ()
 
     my $objects = $expr->from_rows([['c', 'd']]); # [{a => 'c', b => 'd'}];
+
+=head1 SEE ALSO
+
+L<SQL::Abstract>
 
 =head1 AUTHOR
 
