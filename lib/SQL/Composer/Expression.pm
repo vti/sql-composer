@@ -1,11 +1,11 @@
-package SQL::Builder::Expression;
+package SQL::Composer::Expression;
 
 use strict;
 use warnings;
 
 require Carp;
 use Storable ();
-use SQL::Builder::Quoter;
+use SQL::Composer::Quoter;
 
 sub new {
     my $class = shift;
@@ -19,7 +19,7 @@ sub new {
 
     $self->{default_prefix} = $params{default_prefix};
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
 
     my ($sql, $bind) = $self->_build_subexpr('-and', $expr);
 
@@ -148,7 +148,7 @@ __END__
 
 =head1 NAME
 
-SQL::Builder - sql builder
+SQL::Composer - sql builder
 
 =head1 SYNOPSIS
 
@@ -156,21 +156,21 @@ SQL::Builder - sql builder
 
 =head2 Raw SQL
 
-    my $expr = SQL::Builder::Expression->new(expr => \'a = b');
+    my $expr = SQL::Composer::Expression->new(expr => \'a = b');
 
     my $sql = $expr->to_sql;   # 'a = b'
     my @bind = $expr->to_bind; # []
 
 =head2 Raw SQL with bind
 
-    my $expr = SQL::Builder::Expression->new(expr => \['a = ?', 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => \['a = ?', 'b']);
 
     my $sql = $expr->to_sql;   # 'a = ?'
     my @bind = $expr->to_bind; # 'b'
 
 =head2 Simple SQL
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = ?';
@@ -179,7 +179,7 @@ SQL::Builder - sql builder
 
 =head2 Expression with custom operator
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => 'b'}]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => {'>' => 'b'}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` > ?';
@@ -189,7 +189,7 @@ SQL::Builder - sql builder
 
 =head2 Expression with column name
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'-col' => 'b'}]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => {'-col' => 'b'}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = `b`';
@@ -200,7 +200,7 @@ SQL::Builder - sql builder
 =head2 Mixed logical expression
 
     my $expr =
-      SQL::Builder::Expression->new(
+      SQL::Composer::Expression->new(
         expr => [-or => [a => 'b', -and => [c => 'd', 'e' => 'f']]]);
 
     my $sql = $expr->to_sql;   # '(`a` = ? OR (`c` = ? AND `e` = ?))'
@@ -208,7 +208,7 @@ SQL::Builder - sql builder
 
 =head2 C<IN>
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => ['b', 'c', 'd']]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => ['b', 'c', 'd']]);
 
     my $sql = $expr->to_sql;   # '`a` IN (?,?,?)'
     my @bind = $expr->to_bind; # ['b', 'c', 'd']

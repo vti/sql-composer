@@ -1,11 +1,11 @@
-package SQL::Builder::Delete;
+package SQL::Composer::Delete;
 
 use strict;
 use warnings;
 
 require Carp;
-use SQL::Builder::Quoter;
-use SQL::Builder::Expression;
+use SQL::Composer::Quoter;
+use SQL::Composer::Expression;
 
 sub new {
     my $class = shift;
@@ -14,7 +14,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
 
     my $sql = '';
     my @bind;
@@ -24,7 +24,7 @@ sub new {
     $sql .= $self->_quote($params{from});
 
     if ($params{where}) {
-        my $expr = SQL::Builder::Expression->new(
+        my $expr = SQL::Composer::Expression->new(
             quoter => $self->{quoter},
             expr   => $params{where}
         );
@@ -55,11 +55,11 @@ __END__
 
 =head1
 
-SQL::Builder::Delete - DELETE statement
+SQL::Composer::Delete - DELETE statement
 
 =head1 SYNOPSIS
 
-    my $delete = SQL::Builder::Delete->new(from => 'table', where => [a => 'b']);
+    my $delete = SQL::Composer::Delete->new(from => 'table', where => [a => 'b']);
 
     my $sql = $delete->to_sql;   # 'DELETE FROM `table` WHERE `a` = ?'
     my @bind = $delete->to_bind; # ['b']

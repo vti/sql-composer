@@ -1,4 +1,4 @@
-package SQL::Builder;
+package SQL::Composer;
 
 use strict;
 use warnings;
@@ -6,13 +6,13 @@ use warnings;
 our $VERSION = '0.01';
 
 require Carp;
-use SQL::Builder::Select;
-use SQL::Builder::Insert;
-use SQL::Builder::Delete;
-use SQL::Builder::Update;
+use SQL::Composer::Select;
+use SQL::Composer::Insert;
+use SQL::Composer::Delete;
+use SQL::Composer::Update;
 
 $Carp::Internal{(__PACKAGE__)}++;
-$Carp::Internal{"SQL::Builder::$_"}++ for qw/
+$Carp::Internal{"SQL::Composer::$_"}++ for qw/
   Select
   Insert
   Delete
@@ -26,7 +26,7 @@ sub build {
     my $class = shift;
     my ($name) = shift;
 
-    my $class_name = 'SQL::Builder::' . ucfirst($name);
+    my $class_name = 'SQL::Composer::' . ucfirst($name);
     return $class_name->new(@_);
 }
 
@@ -37,13 +37,13 @@ __END__
 
 =head1 NAME
 
-SQL::Builder - sql builder
+SQL::Composer - sql builder
 
 =head1 SYNOPSIS
 
     use DBI;
 
-    my $select = SQL::Builder->build('select',
+    my $select = SQL::Composer->build('select',
         from    => 'book_description',
         columns => ['description'],
         join    => [
@@ -84,7 +84,7 @@ SQL::Builder - sql builder
 
 =head1 DESCRIPTION
 
-L<SQL::Builder> is a SQL builder and rows parser in one module. It behaves very
+L<SQL::Composer> is a SQL builder and rows parser in one module. It behaves very
 close to L<SQL::Abstract> or similar modules but allows deep joins and automatic
 convertion from arrayref to a hashref, keeping the nested join structure if
 needed.
@@ -98,7 +98,7 @@ C<DELETE>, C<INSERT> and C<UPDATE>.
 
 Build SQL statement.
 
-    my $select = SQL::Builder->build('select, @params);
+    my $select = SQL::Composer->build('select, @params);
 
 =head1 SQL
 
@@ -106,57 +106,57 @@ Build SQL statement.
 
 SQL expressions are everything used in C<where>, C<join> and other statements.
 So the following rules apply to all of them. For more details see
-L<SQL::Builder::Expression>.
+L<SQL::Composer::Expression>.
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => 'b']);
 
     my $sql = $expr->to_sql;   # `a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 =head2 SQL Joins
 
-For more details see L<SQL::Builder::Join>.
+For more details see L<SQL::Composer::Join>.
 
-    my $expr = SQL::Builder::Join->new(source => 'table', on => [a => 'b']);
+    my $expr = SQL::Composer::Join->new(source => 'table', on => [a => 'b']);
 
     my $sql = $expr->to_sql;   # JOIN `table` ON `table`.`a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 =head2 SQL Inserts
 
-For more details see L<SQL::Builder::Select>.
+For more details see L<SQL::Composer::Select>.
 
     my $expr =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
 
     my $sql = $expr->to_sql;   # INSERT INTO `table` (`foo`) VALUES (?)
     my @bind = $expr->to_bind; # ('bar')
 
 =head2 SQL Updates
 
-For more details see L<SQL::Builder::Update>.
+For more details see L<SQL::Composer::Update>.
 
     my $expr =
-      SQL::Builder::Update->new(table => 'table', values => [a => 'b']);
+      SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;   # UPDATE `table` SET `a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 =head2 SQL Deletes
 
-For more details see L<SQL::Builder::Delete>.
+For more details see L<SQL::Composer::Delete>.
 
-    my $expr = SQL::Builder::Delete->new(from => 'table');
+    my $expr = SQL::Composer::Delete->new(from => 'table');
 
     my $sql = $expr->to_sql;   # DELETE FROM `table`
     my @bind = $expr->to_bind; # ()
 
 =head2 SQL Selects
 
-For more details see L<SQL::Builder::Select>.
+For more details see L<SQL::Composer::Select>.
 
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
+      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;   # SELECT `table`.`a`,`table`.`b` FROM `table`
     my @bind = $expr->to_bind; # ()

@@ -3,10 +3,10 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder::Delete;
+use SQL::Composer::Delete;
 
 subtest 'build simple' => sub {
-    my $expr = SQL::Builder::Delete->new(from => 'table');
+    my $expr = SQL::Composer::Delete->new(from => 'table');
 
     my $sql = $expr->to_sql;
     is $sql, 'DELETE FROM `table`';
@@ -16,7 +16,7 @@ subtest 'build simple' => sub {
 };
 
 subtest 'build with where' => sub {
-    my $expr = SQL::Builder::Delete->new(from => 'table', where => [a => 'b']);
+    my $expr = SQL::Composer::Delete->new(from => 'table', where => [a => 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, 'DELETE FROM `table` WHERE `a` = ?';

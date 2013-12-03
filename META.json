@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "SQL-Builder",
+   "name" : "SQL-Composer",
    "no_index" : {
       "directory" : [
          "t",
@@ -55,13 +55,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/vti/sql-builder/issues"
+         "web" : "https://github.com/vti/sql-composer/issues"
       },
-      "homepage" : "https://github.com/vti/sql-builder",
+      "homepage" : "https://github.com/vti/sql-composer",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/vti/sql-builder.git",
-         "web" : "https://github.com/vti/sql-builder"
+         "url" : "git://github.com/vti/sql-composer.git",
+         "web" : "https://github.com/vti/sql-composer"
       }
    },
    "version" : "0.01",

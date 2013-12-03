@@ -1,11 +1,11 @@
-package SQL::Builder::Update;
+package SQL::Composer::Update;
 
 use strict;
 use warnings;
 
 require Carp;
-use SQL::Builder::Quoter;
-use SQL::Builder::Expression;
+use SQL::Composer::Quoter;
+use SQL::Composer::Expression;
 
 sub new {
     my $class = shift;
@@ -14,7 +14,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
 
     my $sql = '';
     my @bind;
@@ -45,7 +45,7 @@ sub new {
     }
 
     if ($params{where}) {
-        my $expr = SQL::Builder::Expression->new(
+        my $expr = SQL::Composer::Expression->new(
             quoter => $self->{quoter},
             expr   => $params{where}
         );
@@ -76,11 +76,11 @@ __END__
 
 =head1
 
-SQL::Builder::Update - UPDATE statement
+SQL::Composer::Update - UPDATE statement
 
 =head1 SYNOPSIS
 
-    my $expr = SQL::Builder::Update->new(
+    my $expr = SQL::Composer::Update->new(
         table  => 'table',
         values => [a => 'b'],
         where  => [c => 'd']

@@ -3,10 +3,10 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder;
+use SQL::Composer;
 
 subtest 'build' => sub {
-    my $delete = SQL::Builder->build('delete', from => 'table');
+    my $delete = SQL::Composer->build('delete', from => 'table');
 
     my $sql = $delete->to_sql;
     is $sql, 'DELETE FROM `table`';

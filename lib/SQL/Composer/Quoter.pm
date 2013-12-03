@@ -1,4 +1,4 @@
-package SQL::Builder::Quoter;
+package SQL::Composer::Quoter;
 
 use strict;
 use warnings;
@@ -61,7 +61,7 @@ __END__
 
 =head1 NAME
 
-SQL::Builder::Quoter - internal SQL quotation
+SQL::Composer::Quoter - internal SQL quotation
 
 =head1 DESCRIPTION
 

@@ -3,10 +3,10 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder::Expression;
+use SQL::Composer::Expression;
 
 subtest 'build raw' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => 'a = b');
+    my $expr = SQL::Composer::Expression->new(expr => 'a = b');
 
     my $sql = $expr->to_sql;
     is $sql, 'a = b';
@@ -16,7 +16,7 @@ subtest 'build raw' => sub {
 };
 
 subtest 'build raw ref' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => \'a = b');
+    my $expr = SQL::Composer::Expression->new(expr => \'a = b');
 
     my $sql = $expr->to_sql;
     is $sql, 'a = b';
@@ -26,7 +26,7 @@ subtest 'build raw ref' => sub {
 };
 
 subtest 'build raw with bind' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => \['a = ?', 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => \['a = ?', 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, 'a = ?';
@@ -36,7 +36,7 @@ subtest 'build raw with bind' => sub {
 };
 
 subtest 'build simple' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = ?';
@@ -47,13 +47,13 @@ subtest 'build simple' => sub {
 
 subtest 'not modify original data' => sub {
     my $where = [a => 'b'];
-    my $expr = SQL::Builder::Expression->new(expr => $where);
+    my $expr = SQL::Composer::Expression->new(expr => $where);
 
     is_deeply $where, [a => 'b'];
 };
 
 subtest 'build with column' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'-col' => 'b'}]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => {'-col' => 'b'}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = `b`';
@@ -63,7 +63,7 @@ subtest 'build with column' => sub {
 };
 
 subtest 'build with changed op' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => 'b'}]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => {'>' => 'b'}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` > ?';
@@ -74,7 +74,7 @@ subtest 'build with changed op' => sub {
 
 subtest 'build with column and changed op' => sub {
     my $expr =
-      SQL::Builder::Expression->new(expr => [a => {'>' => {'-col' => 'b'}}]);
+      SQL::Composer::Expression->new(expr => [a => {'>' => {'-col' => 'b'}}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` > `b`';
@@ -84,7 +84,7 @@ subtest 'build with column and changed op' => sub {
 };
 
 subtest 'build as is' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => \'b']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => \'b']);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = b';
@@ -94,7 +94,7 @@ subtest 'build as is' => sub {
 };
 
 subtest 'build as is with changed op' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => {'>' => \'b'}]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => {'>' => \'b'}]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` > b';
@@ -105,7 +105,7 @@ subtest 'build as is with changed op' => sub {
 
 subtest 'build as is with bind' => sub {
     my $expr =
-      SQL::Builder::Expression->new(
+      SQL::Composer::Expression->new(
         expr => [a => {'>' => \['length(?)' => 'hi']}]);
 
     my $sql = $expr->to_sql;
@@ -116,7 +116,7 @@ subtest 'build as is with bind' => sub {
 };
 
 subtest 'build as is on the left' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [\'1' => 1]);
+    my $expr = SQL::Composer::Expression->new(expr => [\'1' => 1]);
 
     my $sql = $expr->to_sql;
     is $sql, '1 = ?';
@@ -126,7 +126,7 @@ subtest 'build as is on the left' => sub {
 };
 
 subtest 'build as is with bind on the left' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [\['length(?)', 5] => 1]);
+    my $expr = SQL::Composer::Expression->new(expr => [\['length(?)', 5] => 1]);
 
     my $sql = $expr->to_sql;
     is $sql, 'length(?) = ?';
@@ -136,7 +136,7 @@ subtest 'build as is with bind on the left' => sub {
 };
 
 subtest 'build in' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => ['b', 'c', 'd']]);
+    my $expr = SQL::Composer::Expression->new(expr => [a => ['b', 'c', 'd']]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` IN (?,?,?)';
@@ -146,7 +146,7 @@ subtest 'build in' => sub {
 };
 
 subtest 'build AND' => sub {
-    my $expr = SQL::Builder::Expression->new(expr => [a => 'b', c => 'd']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => 'b', c => 'd']);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` = ? AND `c` = ?';
@@ -157,7 +157,7 @@ subtest 'build AND' => sub {
 
 subtest 'build OR' => sub {
     my $expr =
-      SQL::Builder::Expression->new(expr => [-or => [a => 'b', c => 'd']]);
+      SQL::Composer::Expression->new(expr => [-or => [a => 'b', c => 'd']]);
 
     my $sql = $expr->to_sql;
     is $sql, '(`a` = ? OR `c` = ?)';
@@ -168,7 +168,7 @@ subtest 'build OR' => sub {
 
 subtest 'build mixed AND/OR' => sub {
     my $expr =
-      SQL::Builder::Expression->new(
+      SQL::Composer::Expression->new(
         expr => [-or => [a => 'b', -and => [c => 'd', 'e' => 'f']]]);
 
     my $sql = $expr->to_sql;

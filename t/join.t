@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 
-use SQL::Builder::Join;
+use SQL::Composer::Join;
 
 subtest 'build simple' => sub {
-    my $expr = SQL::Builder::Join->new(source => 'table', on => [a => 'b']);
+    my $expr = SQL::Composer::Join->new(source => 'table', on => [a => 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, 'JOIN `table` ON `table`.`a` = ?';
@@ -15,7 +15,7 @@ subtest 'build simple' => sub {
 };
 
 subtest 'build simple with as' => sub {
-    my $expr = SQL::Builder::Join->new(
+    my $expr = SQL::Composer::Join->new(
         source => 'table',
         as     => 'another_table',
         on     => [a => 'b']
@@ -29,7 +29,7 @@ subtest 'build simple with as' => sub {
 };
 
 subtest 'build with op' => sub {
-    my $expr = SQL::Builder::Join->new(
+    my $expr = SQL::Composer::Join->new(
         op     => 'left natural',
         source => 'table',
         on     => [a => 'b']
@@ -43,7 +43,7 @@ subtest 'build with op' => sub {
 };
 
 subtest 'build with using' => sub {
-    my $expr = SQL::Builder::Join->new(
+    my $expr = SQL::Composer::Join->new(
         op     => 'left natural',
         source => 'table',
         using  => 'column'

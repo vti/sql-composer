@@ -3,11 +3,11 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder::Select;
+use SQL::Composer::Select;
 
 subtest 'build simple' => sub {
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
+      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table`';
@@ -19,7 +19,7 @@ subtest 'build simple' => sub {
 };
 
 subtest 'build column as' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => [{-col => 'foo' => -as => 'bar'}]
     );
@@ -35,7 +35,7 @@ subtest 'build column as' => sub {
 
 subtest 'build column as is' => sub {
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => [\'COUNT(*)']);
+      SQL::Composer::Select->new(from => 'table', columns => [\'COUNT(*)']);
 
     my $sql = $expr->to_sql;
     is $sql, 'SELECT COUNT(*) FROM `table`';
@@ -47,7 +47,7 @@ subtest 'build column as is' => sub {
 };
 
 subtest 'build column as with as is' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => [{-col => \'COUNT(*)', -as => 'count'}]
     );
@@ -62,7 +62,7 @@ subtest 'build column as with as is' => sub {
 };
 
 subtest 'build with where' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         where   => [a => 'b']
@@ -77,7 +77,7 @@ subtest 'build with where' => sub {
 };
 
 subtest 'build with group_by' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         group_by => 'a'
@@ -91,7 +91,7 @@ subtest 'build with group_by' => sub {
 };
 
 subtest 'build with order by' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
         order_by => 'foo'
@@ -105,7 +105,7 @@ subtest 'build with order by' => sub {
 };
 
 subtest 'build with order by with order' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
         order_by => [foo => 'desc']
@@ -120,7 +120,7 @@ subtest 'build with order by with order' => sub {
 };
 
 subtest 'build with order by multi' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
         order_by => [foo => 'desc', bar => 'asc']
@@ -135,7 +135,7 @@ subtest 'build with order by multi' => sub {
 };
 
 subtest 'build with limit' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         limit   => 5
@@ -149,7 +149,7 @@ subtest 'build with limit' => sub {
 };
 
 subtest 'build with limit and offset' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         limit   => 5,
@@ -164,7 +164,7 @@ subtest 'build with limit and offset' => sub {
 };
 
 subtest 'build with join' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
         join => {source => 'table2', columns => ['b'], on => ['table.a' => '1']}
@@ -182,7 +182,7 @@ subtest 'build with join' => sub {
 };
 
 subtest 'build with join with alias' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
         join => {source => 'table2', as => 'new_table2', columns => ['b'], on => ['table.a' => '1']}
@@ -200,7 +200,7 @@ subtest 'build with join with alias' => sub {
 };
 
 subtest 'build with join and prefix' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
         join    => {
@@ -223,7 +223,7 @@ subtest 'build with join and prefix' => sub {
 };
 
 subtest 'build with multiple joins' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         join    => [
@@ -241,7 +241,7 @@ subtest 'build with multiple joins' => sub {
 };
 
 subtest 'build with deep joins' => sub {
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
         join    => [
@@ -273,7 +273,7 @@ subtest 'build with deep joins' => sub {
 
 subtest 'build with for update' => sub {
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b'], for_update => 1);
+      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b'], for_update => 1);
 
     my $sql = $expr->to_sql;
     is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` FOR UPDATE';

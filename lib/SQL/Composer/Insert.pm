@@ -1,10 +1,10 @@
-package SQL::Builder::Insert;
+package SQL::Composer::Insert;
 
 use strict;
 use warnings;
 
 require Carp;
-use SQL::Builder::Quoter;
+use SQL::Composer::Quoter;
 
 sub new {
     my $class = shift;
@@ -13,7 +13,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
 
     my $sql = '';
     my @bind;
@@ -80,12 +80,12 @@ __END__
 
 =head1
 
-SQL::Builder::Insert - INSERT statement
+SQL::Composer::Insert - INSERT statement
 
 =head1 SYNOPSIS
 
     my $insert =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
 
     my $sql = $insert->to_sql;   # 'INSERT INTO `table` (`foo`) VALUES (?)'
     my @bind = $insert->to_bind; # ['bar']

@@ -1,11 +1,11 @@
-package SQL::Builder::Join;
+package SQL::Composer::Join;
 
 use strict;
 use warnings;
 
 require Carp;
-use SQL::Builder::Quoter;
-use SQL::Builder::Expression;
+use SQL::Composer::Quoter;
+use SQL::Composer::Expression;
 
 sub new {
     my $class = shift;
@@ -15,7 +15,7 @@ sub new {
     bless $self, $class;
 
     $self->{quoter} = $params{quoter}
-      || SQL::Builder::Quoter->new(default_prefix => $params{as}
+      || SQL::Composer::Quoter->new(default_prefix => $params{as}
           || $params{source});
 
     my $sql = '';
@@ -31,7 +31,7 @@ sub new {
     }
 
     if (my $constraint = $params{on}) {
-        my $expr = SQL::Builder::Expression->new(
+        my $expr = SQL::Composer::Expression->new(
             default_prefix => $params{as} || $params{source},
             quoter         => $self->{quoter},
             expr           => $constraint
@@ -66,11 +66,11 @@ __END__
 
 =head1 NAME
 
-SQL::Builder::Join - build joins
+SQL::Composer::Join - build joins
 
 =head1 SYNOPSIS
 
-    my $join = SQL::Builder::Join->new(source => 'table', on => [a => 'b']);
+    my $join = SQL::Composer::Join->new(source => 'table', on => [a => 'b']);
 
     my $sql = $join->to_sql;   # 'JOIN `table` ON `table`.`a` = ?'
     my @bind = $expr->to_bind; # ['b']

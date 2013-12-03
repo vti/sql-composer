@@ -3,11 +3,11 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder::Insert;
+use SQL::Composer::Insert;
 
 subtest 'build simple' => sub {
     my $expr =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
 
     my $sql = $expr->to_sql;
     is $sql, 'INSERT INTO `table` (`foo`) VALUES (?)';
@@ -18,7 +18,7 @@ subtest 'build simple' => sub {
 
 subtest 'build simple with as is' => sub {
     my $expr =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => \"'bar'"]);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => \"'bar'"]);
 
     my $sql = $expr->to_sql;
     is $sql, q{INSERT INTO `table` (`foo`) VALUES ('bar')};
@@ -29,7 +29,7 @@ subtest 'build simple with as is' => sub {
 
 subtest 'build with as is and bind values' => sub {
     my $expr =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => \['NOW() + INTERVAL ?', 15]]);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => \['NOW() + INTERVAL ?', 15]]);
 
     my $sql = $expr->to_sql;
     is $sql, q{INSERT INTO `table` (`foo`) VALUES (NOW() + INTERVAL ?)};

@@ -1,13 +1,13 @@
-package SQL::Builder::Select;
+package SQL::Composer::Select;
 
 use strict;
 use warnings;
 
 require Carp;
 use Scalar::Util ();
-use SQL::Builder::Join;
-use SQL::Builder::Expression;
-use SQL::Builder::Quoter;
+use SQL::Composer::Join;
+use SQL::Composer::Expression;
+use SQL::Composer::Quoter;
 
 sub new {
     my $class = shift;
@@ -23,7 +23,7 @@ sub new {
     $self->{join} = [$self->{join}]
       if $self->{join} && ref $self->{join} ne 'ARRAY';
 
-    $self->{quoter} = $params{quoter} || SQL::Builder::Quoter->new;
+    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
 
     my @columns =
       map { $self->_prepare_column($_, $self->{from}) } @{$self->{columns}};
@@ -49,7 +49,7 @@ sub new {
 
     if (my $where = $params{where}) {
         if (!Scalar::Util::blessed($where)) {
-            $where = SQL::Builder::Expression->new(
+            $where = SQL::Composer::Expression->new(
                 default_prefix => $self->{from},
                 quoter         => $self->{quoter},
                 expr           => $where
@@ -226,7 +226,7 @@ sub _build_join {
     my @bind;
     foreach my $join_params (@$joins) {
         my $join =
-          SQL::Builder::Join->new(quoter => $self->{quoter}, %$join_params);
+          SQL::Composer::Join->new(quoter => $self->{quoter}, %$join_params);
 
         $sql .= ' ' . $join->to_sql;
         push @bind, $join->to_bind;
@@ -255,12 +255,12 @@ __END__
 
 =head1
 
-SQL::Builder::Select - SELECT statement
+SQL::Composer::Select - SELECT statement
 
 =head1 SYNOPSIS
 
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
+      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;        # 'SELECT `table`.`a`,`table`.`b` FROM `table`'
     my @bind = $expr->to_bind;      # []
@@ -274,7 +274,7 @@ to hashref with appropriate column names as keys and joins as nested values.
 
 =head2 Select column with C<AS>
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => [{-col => 'foo' => -as => 'bar'}]
     );
@@ -286,7 +286,7 @@ to hashref with appropriate column names as keys and joins as nested values.
 =head2 Select column with raw SQL
 
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => [\'COUNT(*)']);
+      SQL::Composer::Select->new(from => 'table', columns => [\'COUNT(*)']);
 
     my $sql = $expr->to_sql;   # 'SELECT COUNT(*) FROM `table`'
     my @bind = $expr->to_bind; # [];
@@ -294,9 +294,9 @@ to hashref with appropriate column names as keys and joins as nested values.
 
 =head2 Select with C<WHERE>
 
-For more details see L<SQL::Builder::Expression>.
+For more details see L<SQL::Composer::Expression>.
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         where   => [a => 'b']
@@ -308,7 +308,7 @@ For more details see L<SQL::Builder::Expression>.
 
 =head2 C<GROUP BY>
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         group_by => 'a'
@@ -320,7 +320,7 @@ For more details see L<SQL::Builder::Expression>.
 
 =head2 C<ORDER BY>
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
         order_by => 'foo'
@@ -332,7 +332,7 @@ For more details see L<SQL::Builder::Expression>.
 
 =head2 C<ORDER BY> with sorting order
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
         order_by => [foo => 'desc', bar => 'asc']
@@ -346,7 +346,7 @@ For more details see L<SQL::Builder::Expression>.
 
 =head2 C<LIMIT> and C<OFFSET>
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a', 'b'],
         limit   => 5,
@@ -359,9 +359,9 @@ For more details see L<SQL::Builder::Expression>.
 
 =head2 C<JOIN>
 
-For more details see L<SQL::Builder::Join>.
+For more details see L<SQL::Composer::Join>.
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
         join    => [
@@ -391,7 +391,7 @@ For more details see L<SQL::Builder::Join>.
 
 =head2 C<FOR UPDATE>
 
-    my $expr = SQL::Builder::Select->new(
+    my $expr = SQL::Composer::Select->new(
         from       => 'table',
         columns    => ['a', 'b'],
         for_update => 1

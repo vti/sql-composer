@@ -1,12 +1,12 @@
 # NAME
 
-SQL::Builder - sql builder
+SQL::Composer - sql builder
 
 # SYNOPSIS
 
     use DBI;
 
-    my $select = SQL::Builder->build('select',
+    my $select = SQL::Composer->build('select',
         from    => 'book_description',
         columns => ['description'],
         join    => [
@@ -47,7 +47,7 @@ SQL::Builder - sql builder
 
 # DESCRIPTION
 
-[SQL::Builder](http://search.cpan.org/perldoc?SQL::Builder) is a SQL builder and rows parser in one module. It behaves very
+[SQL::Composer](http://search.cpan.org/perldoc?SQL::Composer) is a SQL builder and rows parser in one module. It behaves very
 close to [SQL::Abstract](http://search.cpan.org/perldoc?SQL::Abstract) or similar modules but allows deep joins and automatic
 convertion from arrayref to a hashref, keeping the nested join structure if
 needed.
@@ -61,7 +61,7 @@ This module itself is just a factory for the common SQL statements: `SELECT`,
 
 Build SQL statement.
 
-    my $select = SQL::Builder->build('select, @params);
+    my $select = SQL::Composer->build('select, @params);
 
 # SQL
 
@@ -69,57 +69,57 @@ Build SQL statement.
 
 SQL expressions are everything used in `where`, `join` and other statements.
 So the following rules apply to all of them. For more details see
-[SQL::Builder::Expression](http://search.cpan.org/perldoc?SQL::Builder::Expression).
+[SQL::Composer::Expression](http://search.cpan.org/perldoc?SQL::Composer::Expression).
 
-    my $expr = SQL::Builder::Expression->new(expr => [a => 'b']);
+    my $expr = SQL::Composer::Expression->new(expr => [a => 'b']);
 
     my $sql = $expr->to_sql;   # `a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 ## SQL Joins
 
-For more details see [SQL::Builder::Join](http://search.cpan.org/perldoc?SQL::Builder::Join).
+For more details see [SQL::Composer::Join](http://search.cpan.org/perldoc?SQL::Composer::Join).
 
-    my $expr = SQL::Builder::Join->new(source => 'table', on => [a => 'b']);
+    my $expr = SQL::Composer::Join->new(source => 'table', on => [a => 'b']);
 
     my $sql = $expr->to_sql;   # JOIN `table` ON `table`.`a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 ## SQL Inserts
 
-For more details see [SQL::Builder::Select](http://search.cpan.org/perldoc?SQL::Builder::Select).
+For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL::Composer::Select).
 
     my $expr =
-      SQL::Builder::Insert->new(into => 'table', values => [foo => 'bar']);
+      SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
 
     my $sql = $expr->to_sql;   # INSERT INTO `table` (`foo`) VALUES (?)
     my @bind = $expr->to_bind; # ('bar')
 
 ## SQL Updates
 
-For more details see [SQL::Builder::Update](http://search.cpan.org/perldoc?SQL::Builder::Update).
+For more details see [SQL::Composer::Update](http://search.cpan.org/perldoc?SQL::Composer::Update).
 
     my $expr =
-      SQL::Builder::Update->new(table => 'table', values => [a => 'b']);
+      SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;   # UPDATE `table` SET `a` = ?
     my @bind = $expr->to_bind; # ('b')
 
 ## SQL Deletes
 
-For more details see [SQL::Builder::Delete](http://search.cpan.org/perldoc?SQL::Builder::Delete).
+For more details see [SQL::Composer::Delete](http://search.cpan.org/perldoc?SQL::Composer::Delete).
 
-    my $expr = SQL::Builder::Delete->new(from => 'table');
+    my $expr = SQL::Composer::Delete->new(from => 'table');
 
     my $sql = $expr->to_sql;   # DELETE FROM `table`
     my @bind = $expr->to_bind; # ()
 
 ## SQL Selects
 
-For more details see [SQL::Builder::Select](http://search.cpan.org/perldoc?SQL::Builder::Select).
+For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL::Composer::Select).
 
     my $expr =
-      SQL::Builder::Select->new(from => 'table', columns => ['a', 'b']);
+      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b']);
 
     my $sql = $expr->to_sql;   # SELECT `table`.`a`,`table`.`b` FROM `table`
     my @bind = $expr->to_bind; # ()

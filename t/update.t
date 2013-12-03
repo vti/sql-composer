@@ -3,11 +3,11 @@ use warnings;
 
 use Test::More;
 
-use SQL::Builder::Update;
+use SQL::Composer::Update;
 
 subtest 'build simple' => sub {
     my $expr =
-      SQL::Builder::Update->new(table => 'table', values => [a => 'b']);
+      SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;
     is $sql, 'UPDATE `table` SET `a` = ?';
@@ -17,7 +17,7 @@ subtest 'build simple' => sub {
 };
 
 subtest 'build with where' => sub {
-    my $expr = SQL::Builder::Update->new(
+    my $expr = SQL::Composer::Update->new(
         table  => 'table',
         values => [a => 'b'],
         where  => [c => 'd']
