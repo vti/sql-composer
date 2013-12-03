@@ -64,7 +64,7 @@
          "web" : "https://github.com/vti/sql-composer"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "vti <viacheslav.t@gmail.com>"
    ]

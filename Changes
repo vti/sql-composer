@@ -1,6 +1,10 @@
-Revision history for Perl extension SQL-Builder
+Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
+
+0.02 2013-12-03T11:21:44Z
+
+    - renamed to SQL::Composer
 
 0.01 2013-12-02T19:10:52Z
 

@@ -23,8 +23,8 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name            => 'SQL-Builder',
-    module_name     => 'SQL::Builder',
+    name            => 'SQL-Composer',
+    module_name     => 'SQL::Composer',
     allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],
