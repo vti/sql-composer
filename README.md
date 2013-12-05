@@ -47,10 +47,9 @@ SQL::Composer - sql builder
 
 # DESCRIPTION
 
-[SQL::Composer](http://search.cpan.org/perldoc?SQL::Composer) is a SQL builder and rows parser in one module. It behaves very
-close to [SQL::Abstract](http://search.cpan.org/perldoc?SQL::Abstract) or similar modules but allows deep joins and automatic
-convertion from arrayref to a hashref, keeping the nested join structure if
-needed.
+[SQL::Composer](http://search.cpan.org/perldoc?SQL::Composer) is a SQL builder and rows parser in one module. It allows deep
+joins and automatic convertion from arrayref to a hashref, keeping the nested
+join structure if needed.
 
 This module itself is just a factory for the common SQL statements: `SELECT`,
 `DELETE`, `INSERT` and `UPDATE`.
@@ -125,6 +124,10 @@ For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL:
     my @bind = $expr->to_bind; # ()
 
     my $objects = $expr->from_rows([['c', 'd']]); # [{a => 'c', b => 'd'}];
+
+# SEE ALSO
+
+[SQL::Abstract](http://search.cpan.org/perldoc?SQL::Abstract)
 
 # AUTHOR
 
