@@ -2,6 +2,11 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.04 2013-12-14T19:49:09Z
+
+    - build correct default values insert statements
+    - pass driver name everywhere
+
 0.03 2013-12-05T18:28:08Z
 
     - remove mentioning of other SQL builders (ask mst why)
