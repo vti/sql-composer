@@ -11,6 +11,12 @@ subtest 'quote simple column' => sub {
     is $quoter->quote('foo'), '`foo`';
 };
 
+subtest 'quote with driver' => sub {
+    my $quoter = SQL::Composer::Quoter->new(driver => 'Pg');
+
+    is $quoter->quote('foo'), '"foo"';
+};
+
 subtest 'quote with prefix' => sub {
     my $quoter = SQL::Composer::Quoter->new();
 

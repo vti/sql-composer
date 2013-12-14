@@ -13,7 +13,8 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
+    $self->{quoter} =
+      $params{quoter} || SQL::Composer::Quoter->new(driver => $params{driver});
 
     my $sql = '';
     my @bind;

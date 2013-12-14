@@ -15,8 +15,10 @@ sub new {
     bless $self, $class;
 
     $self->{quoter} = $params{quoter}
-      || SQL::Composer::Quoter->new(default_prefix => $params{as}
-          || $params{source});
+      || SQL::Composer::Quoter->new(
+        driver         => $params{driver},
+        default_prefix => $params{as} || $params{source}
+      );
 
     my $sql = '';
     my @bind;

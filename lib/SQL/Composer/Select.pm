@@ -23,7 +23,8 @@ sub new {
     $self->{join} = [$self->{join}]
       if $self->{join} && ref $self->{join} ne 'ARRAY';
 
-    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
+    $self->{quoter} =
+      $params{quoter} || SQL::Composer::Quoter->new(driver => $params{driver});
 
     my @columns =
       map { $self->_prepare_column($_, $self->{from}) } @{$self->{columns}};

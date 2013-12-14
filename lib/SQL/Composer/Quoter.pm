@@ -10,9 +10,15 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{quote_char}     = $params{quote_char}     ||= '`';
-    $self->{name_separator} = $params{name_separator} ||= '.';
-    $self->{quote_string_char}     = $params{quote_string_char}     ||= "'";
+    $self->{quote_char}        = $params{quote_char}        ||= '`';
+    $self->{name_separator}    = $params{name_separator}    ||= '.';
+    $self->{quote_string_char} = $params{quote_string_char} ||= "'";
+
+    if (my $driver = $params{driver}) {
+        if ($driver =~ /Pg/i) {
+            $self->{quote_char} = '"';
+        }
+    }
 
     return $self;
 }

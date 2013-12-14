@@ -19,7 +19,8 @@ sub new {
 
     $self->{default_prefix} = $params{default_prefix};
 
-    $self->{quoter} = $params{quoter} || SQL::Composer::Quoter->new;
+    $self->{quoter} =
+      $params{quoter} || SQL::Composer::Quoter->new(driver => $params{driver});
 
     my ($sql, $bind) = $self->_build_subexpr('-and', $expr);
 
