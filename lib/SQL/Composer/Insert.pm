@@ -23,7 +23,7 @@ sub new {
 
     $sql .= $self->_quote($params{into});
 
-    if ($params{values}) {
+    if ($params{values} && @{$params{values}}) {
         my @columns;
         my @values;
         while (my ($key, $value) = splice @{$params{values}}, 0, 2) {
@@ -52,10 +52,21 @@ sub new {
             }
         }
 
-        $sql .= ' (' . (join ',', map { $self->_quote($_) } @columns) . ')';
-        $sql .= ' VALUES (';
-        $sql .= join ',', @values;
-        $sql .= ')';
+        if (@columns) {
+            $sql .= ' (' . (join ',', map { $self->_quote($_) } @columns) . ')';
+            $sql .= ' VALUES (';
+            $sql .= join ',', @values;
+            $sql .= ')';
+        }
+    }
+    else {
+        my $driver = $params{driver};
+        if ($driver && $driver =~ m/(?:sqlite|pg)/i) {
+            $sql .= ' DEFAULT VALUES';
+        }
+        else {
+            $sql .= ' () VALUES ()';
+        }
     }
 
     $self->{sql}  = $sql;

@@ -5,6 +5,28 @@ use Test::More;
 
 use SQL::Composer::Insert;
 
+subtest 'build without values' => sub {
+    my $expr =
+      SQL::Composer::Insert->new(into => 'table', values => []);
+
+    my $sql = $expr->to_sql;
+    is $sql, 'INSERT INTO `table` () VALUES ()';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build without values specific to driver' => sub {
+    my $expr =
+      SQL::Composer::Insert->new(into => 'table', values => [], driver => 'SQLite');
+
+    my $sql = $expr->to_sql;
+    is $sql, 'INSERT INTO `table` DEFAULT VALUES';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build simple' => sub {
     my $expr =
       SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
