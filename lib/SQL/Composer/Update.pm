@@ -25,24 +25,19 @@ sub new {
     $sql .= $self->_quote($params{table});
 
     if ($params{values} || $params{set}) {
-        my $set = $params{values} || $params{set};
-        my @columns;
-
-        if (ref $set eq 'HASH') {
-            while (my ($key, $value) = each %$set) {
-                push @columns, $key;
-                push @bind,    $value;
-            }
-        }
-        else {
-            while (my ($key, $value) = splice @{$set}, 0, 2) {
-                push @columns, $key;
-                push @bind,    $value;
-            }
-        }
+        my $values = $params{values} || $params{set};
+        my @values = ref $values eq 'HASH' ? %$values : @$values;
 
         $sql .= ' SET ';
-        $sql .= join ',', map { $self->_quote($_) . " = ?" } @columns;
+
+        my @pairs;
+        while (my ($key, $value) = splice @values, 0, 2) {
+            push @pairs,
+              $self->_quote($key) . ' = ' . (ref($value) ? $$value : '?');
+            push @bind, $value unless ref $value;
+        }
+
+        $sql .= join ',', @pairs;
     }
 
     if ($params{where}) {
