@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.05 2014-01-17T12:58:35Z
+
+    - support as is values in update
+
 0.04 2013-12-14T19:49:09Z
 
     - build correct default values insert statements
