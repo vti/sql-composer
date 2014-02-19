@@ -90,6 +90,20 @@ subtest 'build with group_by' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with group_by as is' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        group_by => \'a'
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` GROUP BY a';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with order by' => sub {
     my $expr = SQL::Composer::Select->new(
         from     => 'table',
