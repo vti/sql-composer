@@ -47,7 +47,7 @@ SQL::Composer - sql builder
 
 # DESCRIPTION
 
-[SQL::Composer](http://search.cpan.org/perldoc?SQL::Composer) is a SQL builder and rows parser in one module. It allows deep
+[SQL::Composer](https://metacpan.org/pod/SQL::Composer) is a SQL builder and rows parser in one module. It allows deep
 joins and automatic convertion from arrayref to a hashref, keeping the nested
 join structure if needed.
 
@@ -68,7 +68,7 @@ Build SQL statement.
 
 SQL expressions are everything used in `where`, `join` and other statements.
 So the following rules apply to all of them. For more details see
-[SQL::Composer::Expression](http://search.cpan.org/perldoc?SQL::Composer::Expression).
+[SQL::Composer::Expression](https://metacpan.org/pod/SQL::Composer::Expression).
 
     my $expr = SQL::Composer::Expression->new(expr => [a => 'b']);
 
@@ -77,7 +77,7 @@ So the following rules apply to all of them. For more details see
 
 ## SQL Joins
 
-For more details see [SQL::Composer::Join](http://search.cpan.org/perldoc?SQL::Composer::Join).
+For more details see [SQL::Composer::Join](https://metacpan.org/pod/SQL::Composer::Join).
 
     my $expr = SQL::Composer::Join->new(source => 'table', on => [a => 'b']);
 
@@ -86,7 +86,7 @@ For more details see [SQL::Composer::Join](http://search.cpan.org/perldoc?SQL::C
 
 ## SQL Inserts
 
-For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL::Composer::Select).
+For more details see [SQL::Composer::Select](https://metacpan.org/pod/SQL::Composer::Select).
 
     my $expr =
       SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
@@ -96,7 +96,7 @@ For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL:
 
 ## SQL Updates
 
-For more details see [SQL::Composer::Update](http://search.cpan.org/perldoc?SQL::Composer::Update).
+For more details see [SQL::Composer::Update](https://metacpan.org/pod/SQL::Composer::Update).
 
     my $expr =
       SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
@@ -106,7 +106,7 @@ For more details see [SQL::Composer::Update](http://search.cpan.org/perldoc?SQL:
 
 ## SQL Deletes
 
-For more details see [SQL::Composer::Delete](http://search.cpan.org/perldoc?SQL::Composer::Delete).
+For more details see [SQL::Composer::Delete](https://metacpan.org/pod/SQL::Composer::Delete).
 
     my $expr = SQL::Composer::Delete->new(from => 'table');
 
@@ -115,7 +115,7 @@ For more details see [SQL::Composer::Delete](http://search.cpan.org/perldoc?SQL:
 
 ## SQL Selects
 
-For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL::Composer::Select).
+For more details see [SQL::Composer::Select](https://metacpan.org/pod/SQL::Composer::Select).
 
     my $expr =
       SQL::Composer::Select->new(from => 'table', columns => ['a', 'b']);
@@ -127,7 +127,7 @@ For more details see [SQL::Composer::Select](http://search.cpan.org/perldoc?SQL:
 
 # SEE ALSO
 
-[SQL::Abstract](http://search.cpan.org/perldoc?SQL::Abstract)
+[SQL::Abstract](https://metacpan.org/pod/SQL::Abstract)
 
 # AUTHOR
 
