@@ -32,9 +32,29 @@ sub new {
 
         my @pairs;
         while (my ($key, $value) = splice @values, 0, 2) {
-            push @pairs,
-              $self->_quote($key) . ' = ' . (ref($value) ? $$value : '?');
-            push @bind, $value unless ref $value;
+            if (ref $value) {
+                if (ref $value eq 'SCALAR') {
+                    $value = $$value;
+                }
+                elsif (ref $value eq 'REF') {
+                    if (ref $$value eq 'ARRAY') {
+                        push @bind, @$$value[1 .. $#{$$value}];
+                        $value = $$value->[0];
+                    }
+                    else {
+                        Carp::croak('unexpected reference');
+                    }
+                }
+                else {
+                    Carp::croak('unexpected reference');
+                }
+            }
+            else {
+                push @bind, $value;
+                $value = '?';
+            }
+
+            push @pairs, $self->_quote($key) . ' = ' . $value;
         }
 
         $sql .= join ',', @pairs;

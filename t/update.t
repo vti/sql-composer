@@ -27,6 +27,17 @@ subtest 'build simple with as is' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with as is and bind values' => sub {
+    my $expr =
+      SQL::Composer::Update->new(table => 'table', values => [foo => \['NOW() + INTERVAL ?', 15]]);
+
+    my $sql = $expr->to_sql;
+    is $sql, q{UPDATE `table` SET `foo` = NOW() + INTERVAL ?};
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [15];
+};
+
 subtest 'build with where' => sub {
     my $expr = SQL::Composer::Update->new(
         table  => 'table',
