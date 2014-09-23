@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.08 2014-09-23T05:59:02Z
+
+    - allow specifying columns as is with bind values
+
 0.07 2014-08-20T13:59:30Z
 
     - support as is with bind values in update
