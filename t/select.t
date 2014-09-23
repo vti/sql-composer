@@ -61,6 +61,21 @@ subtest 'build column as with as is' => sub {
     is_deeply $expr->from_rows([['c']]), [{'count' => 'c'}];
 };
 
+subtest 'build column as with as is and bind' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from    => 'table',
+        columns => [{-col => \['1 = ?', 2], -as => 'count'}]
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT 1 = ? AS `count` FROM `table`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [2];
+
+    #is_deeply $expr->from_rows([['c']]), [{'count' => 'c'}];
+};
+
 subtest 'build with where' => sub {
     my $expr = SQL::Composer::Select->new(
         from    => 'table',

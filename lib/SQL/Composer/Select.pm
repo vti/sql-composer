@@ -26,12 +26,12 @@ sub new {
     $self->{quoter} =
       $params{quoter} || SQL::Composer::Quoter->new(driver => $params{driver});
 
-    my @columns =
-      map { $self->_prepare_column($_, $self->{from}) } @{$self->{columns}};
-    push @columns, $self->_collect_columns_from_joins($self->{join});
-
     my $sql = '';
     my @bind;
+
+    my @columns =
+      map { $self->_prepare_column($_, $self->{from}, \@bind) } @{$self->{columns}};
+    push @columns, $self->_collect_columns_from_joins($self->{join});
 
     $sql .= 'SELECT ';
 
@@ -132,7 +132,7 @@ sub from_rows {
 
 sub _prepare_column {
     my $self = shift;
-    my ($column, $prefix) = @_;
+    my ($column, $prefix, $bind) = @_;
 
     if (ref $column eq 'SCALAR') {
         return $$column;
@@ -140,7 +140,19 @@ sub _prepare_column {
     elsif (ref $column eq 'HASH') {
         return (
             ref($column->{-col})
-            ? ${$column->{-col}}
+            ? (
+                do {
+                    my $value = $column->{-col};
+                    if (ref $$value eq 'ARRAY') {
+                        my $sql = $$value->[0];
+                        push @$bind, @$$value[1 .. $#{$$value}];
+                        $sql
+                    }
+                    else {
+                        $$value
+                    }
+                  }
+              )
             : $self->_quote($column->{-col}, $prefix)
           )
           . ' AS '
