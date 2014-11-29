@@ -163,6 +163,34 @@ subtest 'build with order by multi' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with order by as is' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => \'foo'
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY foo';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with order by order and as is' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => [\'foo' => 'DESC']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY foo DESC';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with limit' => sub {
     my $expr = SQL::Composer::Select->new(
         from    => 'table',

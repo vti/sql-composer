@@ -77,10 +77,18 @@ sub new {
             if (ref($order_by) eq 'ARRAY') {
                 my @order;
                 while (my ($key, $value) = splice @$order_by, 0, 2) {
-                    push @order,
-                      $self->_quote($key, $self->{from}) . ' ' . uc($value);
+                    if (ref($key) eq 'SCALAR') {
+                        push @order, $$key . ' ' . uc($value);
+                    }
+                    else {
+                        push @order,
+                          $self->_quote($key, $self->{from}) . ' ' . uc($value);
+                    }
                 }
                 $sql .= join ',', @order;
+            }
+            elsif (ref($order_by) eq 'SCALAR') {
+                $sql .= $$order_by;
             }
             else {
                 Carp::croak('unexpected reference');
