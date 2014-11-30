@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.09 2014-11-30T08:27:45Z
+
+    - allow order by as is values
+
 0.08 2014-09-23T05:59:02Z
 
     - allow specifying columns as is with bind values
