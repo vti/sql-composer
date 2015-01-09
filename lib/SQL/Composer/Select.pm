@@ -204,14 +204,8 @@ sub _populate_joins {
 
         if (my $subjoins = $join->{join}) {
             $subjoins = [$subjoins] unless ref $subjoins eq 'ARRAY';
-            foreach my $subjoin (@$subjoins) {
-                my $subjoin_source =
-                  $subjoin->{rel_name} || $subjoin->{as} || $subjoin->{source};
 
-                $set->{$join_source}->{$subjoin_source} ||= {};
-                $self->_populate($set->{$join_source}->{$subjoin_source},
-                    $row, $subjoin->{columns});
-            }
+            $self->_populate_joins($set->{$join_source}, $row, $subjoins);
         }
     }
 }
