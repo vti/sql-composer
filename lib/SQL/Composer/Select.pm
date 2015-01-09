@@ -30,7 +30,8 @@ sub new {
     my @bind;
 
     my @columns =
-      map { $self->_prepare_column($_, $self->{from}, \@bind) } @{$self->{columns}};
+      map { $self->_prepare_column($_, $self->{from}, \@bind) }
+      @{$self->{columns}};
     push @columns, $self->_collect_columns_from_joins($self->{join});
 
     $sql .= 'SELECT ';
@@ -154,10 +155,10 @@ sub _prepare_column {
                     if (ref $$value eq 'ARRAY') {
                         my $sql = $$value->[0];
                         push @$bind, @$$value[1 .. $#{$$value}];
-                        $sql
+                        $sql;
                     }
                     else {
-                        $$value
+                        $$value;
                     }
                   }
               )
@@ -196,7 +197,7 @@ sub _populate_joins {
     my ($set, $row, $joins) = @_;
 
     foreach my $join (@$joins) {
-        my $join_source = $join->{as} || $join->{source};
+        my $join_source = $join->{rel_name} || $join->{as} || $join->{source};
 
         $set->{$join_source} ||= {};
         $self->_populate($set->{$join_source}, $row, $join->{columns});
@@ -204,7 +205,8 @@ sub _populate_joins {
         if (my $subjoins = $join->{join}) {
             $subjoins = [$subjoins] unless ref $subjoins eq 'ARRAY';
             foreach my $subjoin (@$subjoins) {
-                my $subjoin_source = $subjoin->{as} || $subjoin->{source};
+                my $subjoin_source =
+                  $subjoin->{rel_name} || $subjoin->{as} || $subjoin->{source};
 
                 $set->{$join_source}->{$subjoin_source} ||= {};
                 $self->_populate($set->{$join_source}->{$subjoin_source},

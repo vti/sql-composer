@@ -93,8 +93,8 @@ subtest 'build with where' => sub {
 
 subtest 'build with group_by' => sub {
     my $expr = SQL::Composer::Select->new(
-        from    => 'table',
-        columns => ['a', 'b'],
+        from     => 'table',
+        columns  => ['a', 'b'],
         group_by => 'a'
     );
 
@@ -107,8 +107,8 @@ subtest 'build with group_by' => sub {
 
 subtest 'build with group_by as is' => sub {
     my $expr = SQL::Composer::Select->new(
-        from    => 'table',
-        columns => ['a', 'b'],
+        from     => 'table',
+        columns  => ['a', 'b'],
         group_by => \'a'
     );
 
@@ -242,7 +242,12 @@ subtest 'build with join with alias' => sub {
     my $expr = SQL::Composer::Select->new(
         from    => 'table',
         columns => ['a'],
-        join => {source => 'table2', as => 'new_table2', columns => ['b'], on => ['table.a' => '1']}
+        join    => {
+            source  => 'table2',
+            as      => 'new_table2',
+            columns => ['b'],
+            on      => ['table.a' => '1']
+        }
     );
 
     my $sql = $expr->to_sql;
@@ -328,9 +333,80 @@ subtest 'build with deep joins' => sub {
       [{a => 'c', table2 => {b => 'd', table3 => {c => 'e'}}}];
 };
 
+subtest 'build with deep joins and as' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from    => 'table',
+        columns => ['a'],
+        join    => [
+            {
+                source  => 'table2',
+                as      => 'second',
+                columns => ['b'],
+                on      => [a => '1'],
+                join    => [
+                    {
+                        source  => 'table3',
+                        as      => 'third',
+                        columns => ['c'],
+                        on      => [b => '2']
+                    }
+                ]
+            }
+        ]
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql,
+'SELECT `table`.`a`,`second`.`b`,`third`.`c` FROM `table` JOIN `table2` AS `second` ON `second`.`a` = ? JOIN `table3` AS `third` ON `third`.`b` = ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['1', '2'];
+
+    is_deeply $expr->from_rows([['c', 'd', 'e']]),
+      [{a => 'c', second => {b => 'd', third => {c => 'e'}}}];
+};
+
+subtest 'build with deep joins and as and rel_name' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from    => 'table',
+        columns => ['a'],
+        join    => [
+            {
+                source   => 'table2',
+                as       => 'second',
+                rel_name => 'foo',
+                columns  => ['b'],
+                on       => [a => '1'],
+                join     => [
+                    {
+                        source   => 'table3',
+                        as       => 'third',
+                        rel_name => 'bar',
+                        columns  => ['c'],
+                        on       => [b => '2']
+                    }
+                ]
+            }
+        ]
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql,
+'SELECT `table`.`a`,`second`.`b`,`third`.`c` FROM `table` JOIN `table2` AS `second` ON `second`.`a` = ? JOIN `table3` AS `third` ON `third`.`b` = ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['1', '2'];
+
+    is_deeply $expr->from_rows([['c', 'd', 'e']]),
+      [{a => 'c', foo => {b => 'd', bar => {c => 'e'}}}];
+};
+
 subtest 'build with for update' => sub {
-    my $expr =
-      SQL::Composer::Select->new(from => 'table', columns => ['a', 'b'], for_update => 1);
+    my $expr = SQL::Composer::Select->new(
+        from       => 'table',
+        columns    => ['a', 'b'],
+        for_update => 1
+    );
 
     my $sql = $expr->to_sql;
     is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` FOR UPDATE';
