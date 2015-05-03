@@ -106,11 +106,11 @@ sub new {
         }
     }
 
-    if (my $limit = $params{limit}) {
+    if (defined(my $limit = $params{limit})) {
         $sql .= ' LIMIT ' . $limit;
     }
 
-    if (my $offset = $params{offset}) {
+    if (defined(my $offset = $params{offset})) {
         $sql .= ' OFFSET ' . $offset;
     }
 
