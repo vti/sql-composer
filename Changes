@@ -2,6 +2,12 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.10 2015-05-03T07:19:30Z
+
+    - support multiple group by #GH-2
+    - make join population recursive
+    - allow overwriting rel name
+
 0.09 2014-11-30T08:27:45Z
 
     - allow order by as is values
