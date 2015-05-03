@@ -119,6 +119,21 @@ subtest 'build with group_by as is' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with multiple group_by' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        group_by => ['a', \'b', 'c']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` '
+      . 'FROM `table` GROUP BY `table`.`a`, b, `table`.`c`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with order by' => sub {
     my $expr = SQL::Composer::Select->new(
         from     => 'table',

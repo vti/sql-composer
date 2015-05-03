@@ -64,12 +64,18 @@ sub new {
         }
     }
 
-    if (my $group_by = $params{group_by}) {
-        $group_by =
-          ref($group_by)
-          ? $$group_by
-          : $self->_quote($group_by, $self->{from});
-        $sql .= ' GROUP BY ' . $group_by;
+    if (my $group_bys = $params{group_by}) {
+        $group_bys = [$group_bys] unless ref $group_bys eq 'ARRAY';
+
+        my @group_by;
+        foreach my $group_by (@$group_bys) {
+            push @group_by,
+              ref($group_by)
+              ? $$group_by
+              : $self->_quote($group_by, $self->{from});
+        }
+
+        $sql .= ' GROUP BY ' . join(', ', @group_by);
     }
 
     if (my $order_by = $params{order_by}) {
