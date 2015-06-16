@@ -5,6 +5,11 @@ use warnings;
 
 our $VERSION = '0.10';
 
+use base 'Exporter';
+
+our @EXPORT_OK = qw(sql_select sql_insert sql_delete sql_update);
+our %EXPORT_TAGS = (funcs => [qw(sql_select sql_insert sql_delete sql_update)]);
+
 require Carp;
 use SQL::Composer::Select;
 use SQL::Composer::Insert;
@@ -29,6 +34,11 @@ sub build {
     my $class_name = 'SQL::Composer::' . ucfirst($name);
     return $class_name->new(@_);
 }
+
+sub sql_select { build(__PACKAGE__, 'select', @_) }
+sub sql_insert { build(__PACKAGE__, 'insert', @_) }
+sub sql_update { build(__PACKAGE__, 'update', @_) }
+sub sql_delete { build(__PACKAGE__, 'delete', @_) }
 
 1;
 __END__
@@ -98,6 +108,14 @@ C<DELETE>, C<INSERT> and C<UPDATE>.
 Build SQL statement.
 
     my $select = SQL::Composer->build('select, @params);
+
+=head1 FUNCTIONS
+
+Sometimes it is easier to work with functions, using C<:funcs> tags you will get
+C<sql_select>, C<sql_insert>, C<sql_update> and C<sql_delete> functions which
+are equivalents of using C<build> method.
+
+    my $sql = sql_select from => 'authors', where => [name => 'vti'];
 
 =head1 SQL
 
