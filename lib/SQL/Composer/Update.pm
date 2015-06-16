@@ -69,6 +69,14 @@ sub new {
         push @bind, $expr->to_bind;
     }
 
+    if (defined(my $limit = $params{limit})) {
+        $sql .= ' LIMIT ' . $limit;
+    }
+
+    if (defined(my $offset = $params{offset})) {
+        $sql .= ' OFFSET ' . $offset;
+    }
+
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
 

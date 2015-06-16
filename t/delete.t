@@ -25,4 +25,31 @@ subtest 'build with where' => sub {
     is_deeply \@bind, ['b'];
 };
 
+subtest 'build with limit' => sub {
+    my $expr = SQL::Composer::Delete->new(
+        from  => 'table',
+        limit => 5
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'DELETE FROM `table` LIMIT 5';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with limit and offset' => sub {
+    my $expr = SQL::Composer::Delete->new(
+        from   => 'table',
+        limit  => 5,
+        offset => 10
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'DELETE FROM `table` LIMIT 5 OFFSET 10';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 done_testing;
