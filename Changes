@@ -2,6 +2,11 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.11 2015-06-16T18:06:19Z
+
+    - functions
+    - limit and offset 0 #GH-3
+
 0.10 2015-05-03T07:19:30Z
 
     - support multiple group by #GH-2

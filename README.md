@@ -62,6 +62,14 @@ Build SQL statement.
 
     my $select = SQL::Composer->build('select, @params);
 
+# FUNCTIONS
+
+Sometimes it is easier to work with functions, using `:funcs` tags you will get
+`sql_select`, `sql_insert`, `sql_update` and `sql_delete` functions which
+are equivalents of using `build` method.
+
+    my $sql = sql_select from => 'authors', where => [name => 'vti'];
+
 # SQL
 
 ## SQL expressions
