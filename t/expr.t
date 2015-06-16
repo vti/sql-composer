@@ -135,11 +135,22 @@ subtest 'build as is with bind on the left' => sub {
     is_deeply \@bind, ['5', '1'];
 };
 
-subtest 'build in' => sub {
+subtest 'build IN' => sub {
     my $expr = SQL::Composer::Expression->new(expr => [a => ['b', 'c', 'd']]);
 
     my $sql = $expr->to_sql;
     is $sql, '`a` IN (?,?,?)';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['b', 'c', 'd'];
+};
+
+subtest 'build NOT IN' => sub {
+    my $expr =
+      SQL::Composer::Expression->new(expr => [a => {'NOT' => ['b', 'c', 'd']}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '`a` NOT IN (?,?,?)';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b', 'c', 'd'];
