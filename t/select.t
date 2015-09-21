@@ -134,6 +134,21 @@ subtest 'build with multiple group_by' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with group_by and having' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        group_by => 'a',
+        having => [c => 1]
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` GROUP BY `table`.`a` HAVING `table`.`c` = ?';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [1];
+};
+
 subtest 'build with order by' => sub {
     my $expr = SQL::Composer::Select->new(
         from     => 'table',

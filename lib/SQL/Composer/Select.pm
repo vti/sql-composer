@@ -78,6 +78,21 @@ sub new {
         $sql .= ' GROUP BY ' . join(', ', @group_by);
     }
 
+    if (my $having = $params{having}) {
+        if (!Scalar::Util::blessed($having)) {
+            $having = SQL::Composer::Expression->new(
+                default_prefix => $self->{from},
+                quoter         => $self->{quoter},
+                expr           => $having
+            );
+        }
+
+        if (my $having_sql = $having->to_sql) {
+            $sql .= ' HAVING ' . $having->to_sql;
+            push @bind, $having->to_bind;
+        }
+    }
+
     if (my $order_by = $params{order_by}) {
         $sql .= ' ORDER BY ';
         if (ref $order_by) {
