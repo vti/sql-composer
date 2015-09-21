@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.13 2015-09-21T08:08:40Z
+
+    - support HAVING
+
 0.12 2015-06-16T18:13:30Z
 
     - limit & offset for UPDATE and DELETE
