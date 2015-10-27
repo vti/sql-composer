@@ -141,7 +141,7 @@ For more details see L<SQL::Composer::Join>.
 
 =head2 SQL Inserts
 
-For more details see L<SQL::Composer::Select>.
+For more details see L<SQL::Composer::Insert>.
 
     my $expr =
       SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
