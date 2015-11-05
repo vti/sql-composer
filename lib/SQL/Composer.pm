@@ -193,6 +193,10 @@ For more details see L<SQL::Composer::Select>.
 
     my $objects = $expr->from_rows([['c', 'd']]); # [{a => 'c', b => 'd'}];
 
+=head1 CREDITS
+
+Stevan Little
+
 =head1 SEE ALSO
 
 L<SQL::Abstract>
