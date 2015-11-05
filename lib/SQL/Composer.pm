@@ -7,14 +7,15 @@ our $VERSION = '0.13';
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw(sql_select sql_insert sql_delete sql_update);
-our %EXPORT_TAGS = (funcs => [qw(sql_select sql_insert sql_delete sql_update)]);
+our @EXPORT_OK = qw(sql_select sql_insert sql_delete sql_update sql_upsert);
+our %EXPORT_TAGS = (funcs => [qw(sql_select sql_insert sql_delete sql_update sql_upsert)]);
 
 require Carp;
 use SQL::Composer::Select;
 use SQL::Composer::Insert;
 use SQL::Composer::Delete;
 use SQL::Composer::Update;
+use SQL::Composer::Upsert;
 
 $Carp::Internal{(__PACKAGE__)}++;
 $Carp::Internal{"SQL::Composer::$_"}++ for qw/
@@ -22,6 +23,7 @@ $Carp::Internal{"SQL::Composer::$_"}++ for qw/
   Insert
   Delete
   Update
+  Upsert
   Expression
   Join
   Quoter
@@ -39,6 +41,7 @@ sub sql_select { build(__PACKAGE__, 'select', @_) }
 sub sql_insert { build(__PACKAGE__, 'insert', @_) }
 sub sql_update { build(__PACKAGE__, 'update', @_) }
 sub sql_delete { build(__PACKAGE__, 'delete', @_) }
+sub sql_upsert { build(__PACKAGE__, 'upsert', @_) }
 
 1;
 __END__
@@ -112,7 +115,7 @@ Build SQL statement.
 =head1 FUNCTIONS
 
 Sometimes it is easier to work with functions, using C<:funcs> tags you will get
-C<sql_select>, C<sql_insert>, C<sql_update> and C<sql_delete> functions which
+C<sql_select>, C<sql_insert>, C<sql_update>, C<sql_upsert> and C<sql_delete> functions which
 are equivalents of using C<build> method.
 
     my $sql = sql_select from => 'authors', where => [name => 'vti'];
@@ -157,6 +160,16 @@ For more details see L<SQL::Composer::Update>.
       SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;   # UPDATE `table` SET `a` = ?
+    my @bind = $expr->to_bind; # ('b')
+
+=head2 SQL Upserts
+
+For more details see L<SQL::Composer::Upsert>.
+
+    my $expr =
+      SQL::Composer::Upsert->new(into => 'table', values => [a => 'b'], driver => 'SQLite');
+
+    my $sql = $expr->to_sql;   # INSERT OR REPLACE INTO `table` (`a`) VALUES (?)
     my @bind = $expr->to_bind; # ('b')
 
 =head2 SQL Deletes
