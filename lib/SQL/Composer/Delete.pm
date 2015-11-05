@@ -11,7 +11,7 @@ sub new {
     my $class = shift;
     my (%params) = @_;
 
-    my $self = {};
+    my $self = { table => $params{from} };
     bless $self, $class;
 
     $self->{quoter} =
@@ -46,6 +46,8 @@ sub new {
 
     return $self;
 }
+
+sub table { shift->{table} }
 
 sub to_sql { shift->{sql} }
 sub to_bind { @{shift->{bind} || []} }

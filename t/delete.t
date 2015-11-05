@@ -13,6 +13,8 @@ subtest 'build simple' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is 'table', $expr->table;
 };
 
 subtest 'build with where' => sub {

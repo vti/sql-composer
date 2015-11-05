@@ -14,6 +14,8 @@ subtest 'build simple' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, ['b'];
+
+    is 'table', $expr->table;
 };
 
 subtest 'build simple with as is' => sub {
