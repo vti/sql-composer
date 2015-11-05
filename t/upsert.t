@@ -27,7 +27,7 @@ subtest 'build upsert for MySQL' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'INSERT INTO `table` (`id`,`name`) VALUES (?,?) ON DUPLICATE KEY UPDATE';
+    is $sql, 'INSERT INTO `table` (`id`,`name`) VALUES (?,?) ON DUPLICATE KEY UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`)';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [1, 'foo'];

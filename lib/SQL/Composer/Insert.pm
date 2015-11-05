@@ -58,6 +58,9 @@ sub new {
             $sql .= join ',', @values;
             $sql .= ')';
         }
+
+        # save this for later ...
+        $self->{columns} = \@columns;
     }
     else {
         my $driver = $params{driver};
