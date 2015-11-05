@@ -21,7 +21,11 @@ sub new {
         $sql =~ s/^INSERT /INSERT OR REPLACE /;
     }
     elsif ($driver =~ m/mysql/i) {
-        $sql .= ' ON DUPLICATE KEY UPDATE'
+        $sql .= ' ON DUPLICATE KEY UPDATE '
+             . (join ', ' => map {
+                    my $c = $self->_quote($_);
+                    ($c.' = VALUES('.$c.')')
+                }  @{ $self->{columns} });
     }
     elsif ($driver =~ m/pg/i) {
         $sql .= ' ON CONFLICT DO UPDATE'
