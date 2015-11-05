@@ -14,6 +14,8 @@ subtest 'build without values' => sub {
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
+
+    is 'table', $expr->table;
 };
 
 subtest 'build without values specific to driver' => sub {

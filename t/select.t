@@ -16,6 +16,8 @@ subtest 'build simple' => sub {
     is_deeply \@bind, [];
 
     is_deeply $expr->from_rows([['c', 'd']]), [{a => 'c', b => 'd'}];
+
+    is 'table', $expr->table;
 };
 
 subtest 'build column as' => sub {

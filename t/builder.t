@@ -13,6 +13,8 @@ subtest 'build' => sub {
 
     my @bind = $delete->to_bind;
     is_deeply \@bind, [];
+
+    is 'table', $delete->table;
 };
 
 done_testing;
