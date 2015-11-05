@@ -14,22 +14,23 @@ sub new {
     my $driver = $params{driver}
         || die 'Cannot create an Upsert object without specifying a `driver`';
 
-    my $upsert = '';
+    my $self = $class->SUPER::new( %params );
+    my $sql  = $self->{sql};
+
     if ($driver =~ m/sqlite/i) {
-        $upsert = ' ON CONFLICT REPLACE'
+        $sql =~ s/^INSERT /INSERT OR REPLACE /;
     }
     elsif ($driver =~ m/mysql/i) {
-        $upsert = ' ON DUPLICATE KEY UPDATE'
+        $sql .= ' ON DUPLICATE KEY UPDATE'
     }
     elsif ($driver =~ m/pg/i) {
-        $upsert = ' ON CONFLICT DO UPDATE'
+        $sql .= ' ON CONFLICT DO UPDATE'
     }
     else {
         die 'The Upsert `driver` (' . $driver . ') is not supported';
     }
 
-    my $self = $class->SUPER::new( %params );
-    $self->{sql} .= $upsert;
+    $self->{sql} = $sql;
 
     return $self;
 }

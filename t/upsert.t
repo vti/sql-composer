@@ -13,7 +13,7 @@ subtest 'build upsert for SQLite' => sub {
     );
 
     my $sql = $expr->to_sql;
-    is $sql, 'INSERT INTO `table` (`id`,`name`) VALUES (?,?) ON CONFLICT REPLACE';
+    is $sql, 'INSERT OR REPLACE INTO `table` (`id`,`name`) VALUES (?,?)';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [1, 'foo'];
