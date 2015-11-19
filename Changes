@@ -2,6 +2,12 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.14 2015-11-19T21:21:28Z
+
+    - upserts (Stevan Little)
+    - normalised table method (Stevan Little)
+    - doc link correction (mickey)
+
 0.13 2015-09-21T08:08:40Z
 
     - support HAVING

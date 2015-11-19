@@ -65,7 +65,7 @@ Build SQL statement.
 # FUNCTIONS
 
 Sometimes it is easier to work with functions, using `:funcs` tags you will get
-`sql_select`, `sql_insert`, `sql_update` and `sql_delete` functions which
+`sql_select`, `sql_insert`, `sql_update`, `sql_upsert` and `sql_delete` functions which
 are equivalents of using `build` method.
 
     my $sql = sql_select from => 'authors', where => [name => 'vti'];
@@ -94,7 +94,7 @@ For more details see [SQL::Composer::Join](https://metacpan.org/pod/SQL::Compose
 
 ## SQL Inserts
 
-For more details see [SQL::Composer::Select](https://metacpan.org/pod/SQL::Composer::Select).
+For more details see [SQL::Composer::Insert](https://metacpan.org/pod/SQL::Composer::Insert).
 
     my $expr =
       SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar']);
@@ -110,6 +110,16 @@ For more details see [SQL::Composer::Update](https://metacpan.org/pod/SQL::Compo
       SQL::Composer::Update->new(table => 'table', values => [a => 'b']);
 
     my $sql = $expr->to_sql;   # UPDATE `table` SET `a` = ?
+    my @bind = $expr->to_bind; # ('b')
+
+## SQL Upserts
+
+For more details see [SQL::Composer::Upsert](https://metacpan.org/pod/SQL::Composer::Upsert).
+
+    my $expr =
+      SQL::Composer::Upsert->new(into => 'table', values => [a => 'b'], driver => 'SQLite');
+
+    my $sql = $expr->to_sql;   # INSERT OR REPLACE INTO `table` (`a`) VALUES (?)
     my @bind = $expr->to_bind; # ('b')
 
 ## SQL Deletes
@@ -132,6 +142,10 @@ For more details see [SQL::Composer::Select](https://metacpan.org/pod/SQL::Compo
     my @bind = $expr->to_bind; # ()
 
     my $objects = $expr->from_rows([['c', 'd']]); # [{a => 'c', b => 'd'}];
+
+# CREDITS
+
+Stevan Little
 
 # SEE ALSO
 
