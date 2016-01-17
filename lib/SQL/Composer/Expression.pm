@@ -63,7 +63,7 @@ sub _build_subexpr {
 
             if ($op eq '-col') {
                 push @parts,
-                  $self->_quote(1, $key) . ' = ' . $self->_quote(1, $subvalue);
+                  $self->_quote($quote, $key) . ' = ' . $self->_quote(1, $subvalue);
             }
             else {
                 my ($_value, $_bind) = $self->_build_value($subvalue);

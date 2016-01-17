@@ -125,6 +125,16 @@ subtest 'build as is on the left' => sub {
     is_deeply \@bind, ['1'];
 };
 
+subtest 'build as is on the left with column' => sub {
+    my $expr = SQL::Composer::Expression->new(expr => [\'1' => {-col => 'column_name'}]);
+
+    my $sql = $expr->to_sql;
+    is $sql, '1 = `column_name`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build as is with bind on the left' => sub {
     my $expr = SQL::Composer::Expression->new(expr => [\['length(?)', 5] => 1]);
 
