@@ -2,6 +2,8 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.15 2016-01-17T11:14:06Z
+
     - fix AS IS on the left with the column is on the right
 
 0.14 2015-11-19T21:21:28Z
