@@ -99,12 +99,20 @@ sub new {
             if (ref($order_by) eq 'ARRAY') {
                 my @order;
                 while (my ($key, $value) = splice @$order_by, 0, 2) {
+                    my $order_type = uc($value // '');
+                    if ($order_type eq 'ASC' || $order_type eq 'DESC') {
+                        $order_type = " $order_type";
+                    }
+                    else {
+                        $order_type = '';
+                    }
+
                     if (ref($key) eq 'SCALAR') {
-                        push @order, $$key . ' ' . uc($value);
+                        push @order, $$key . $order_type;
                     }
                     else {
                         push @order,
-                          $self->_quote($key, $self->{from}) . ' ' . uc($value);
+                          $self->_quote($key, $self->{from}) . $order_type;
                     }
                 }
                 $sql .= join ',', @order;

@@ -165,7 +165,21 @@ subtest 'build with order by' => sub {
     is_deeply \@bind, [];
 };
 
-subtest 'build with order by with order' => sub {
+subtest 'build with order by' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => ['foo']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo`';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with order by with order type' => sub {
     my $expr = SQL::Composer::Select->new(
         from     => 'table',
         columns  => ['a', 'b'],
@@ -190,6 +204,20 @@ subtest 'build with order by multi' => sub {
     my $sql = $expr->to_sql;
     is $sql,
 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo` DESC,`table`.`bar` ASC';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
+subtest 'build with order by ignoring invalid order type' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => [foo => 'other']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo`';
 
     my @bind = $expr->to_bind;
     is_deeply \@bind, [];
