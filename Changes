@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.16 2016-04-12T10:05:30Z
+
+    - make sure order type is validated
+
 0.15 2016-01-17T11:14:06Z
 
     - fix AS IS on the left with the column is on the right

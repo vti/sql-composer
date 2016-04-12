@@ -4,7 +4,7 @@
       "Viacheslav Tykhanovskyi"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.1, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Minilla/v2.5.0, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -28,7 +28,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.035"
+            "Module::Build" : "0.38"
          }
       },
       "develop" : {
@@ -63,12 +63,12 @@
          "web" : "https://github.com/vti/sql-composer"
       }
    },
-   "version" : "0.15",
+   "version" : "0.16",
    "x_contributors" : [
       "mickey <mickey75@gmail.com>",
-      "vti <vti@clarive.com>",
       "Stevan Little <stevan.little@booking.com>",
-      "vti <viacheslav.t@gmail.com>"
+      "vti <viacheslav.t@gmail.com>",
+      "vti <vti@clarive.com>"
    ],
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }
