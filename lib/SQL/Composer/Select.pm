@@ -99,12 +99,19 @@ sub new {
             if (ref($order_by) eq 'ARRAY') {
                 my @order;
                 while (my ($key, $value) = splice @$order_by, 0, 2) {
-                    my $order_type = uc($value // '');
-                    if ($order_type eq 'ASC' || $order_type eq 'DESC') {
-                        $order_type = " $order_type";
+                    my $order_type;
+
+                    if (ref $value) {
+                        $order_type = ' ' . $$value;
                     }
                     else {
-                        $order_type = '';
+                        $order_type = uc($value // '');
+                        if ($order_type eq 'ASC' || $order_type eq 'DESC') {
+                            $order_type = " $order_type";
+                        }
+                        else {
+                            $order_type = '';
+                        }
                     }
 
                     if (ref($key) eq 'SCALAR') {

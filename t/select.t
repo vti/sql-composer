@@ -223,6 +223,20 @@ subtest 'build with order by ignoring invalid order type' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with order by with as is order type' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from     => 'table',
+        columns  => ['a', 'b'],
+        order_by => [foo => \'DESC NULLS LAST']
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` ORDER BY `table`.`foo` DESC NULLS LAST';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with order by as is' => sub {
     my $expr = SQL::Composer::Select->new(
         from     => 'table',
