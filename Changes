@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.18 2017-04-16T08:02:53Z
+
+    - do not use //
+
 0.17 2017-04-09T12:37:00Z
 
     - support as is order types

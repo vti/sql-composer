@@ -63,7 +63,7 @@
          "web" : "https://github.com/vti/sql-composer"
       }
    },
-   "version" : "0.17",
+   "version" : "0.18",
    "x_contributors" : [
       "mickey <mickey75@gmail.com>",
       "Stevan Little <stevan.little@booking.com>",
