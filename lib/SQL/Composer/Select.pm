@@ -105,7 +105,8 @@ sub new {
                         $order_type = ' ' . $$value;
                     }
                     else {
-                        $order_type = uc($value // '');
+                        $value = '' unless defined $value;
+                        $order_type = uc($value);
                         if ($order_type eq 'ASC' || $order_type eq 'DESC') {
                             $order_type = " $order_type";
                         }
