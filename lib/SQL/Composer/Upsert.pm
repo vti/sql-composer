@@ -3,9 +3,9 @@ package SQL::Composer::Upsert;
 use strict;
 use warnings;
 
-use SQL::Composer::Insert;
+use base 'SQL::Composer::Insert';
 
-our @ISA; BEGIN { @ISA = ('SQL::Composer::Insert') };
+use SQL::Composer::Insert;
 
 sub new {
     my $class = shift;
