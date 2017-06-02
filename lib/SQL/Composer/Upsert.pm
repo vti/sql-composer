@@ -28,7 +28,7 @@ sub new {
                 }  @{ $self->{columns} });
     }
     elsif ($driver =~ m/pg/i) {
-        $sql .= ' ON CONFLICT DO UPDATE'
+        $sql .= ' ON CONFLICT DO UPDATE';
     }
     else {
         die 'The Upsert `driver` (' . $driver . ') is not supported';
