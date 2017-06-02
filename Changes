@@ -2,6 +2,10 @@ Revision history for Perl extension SQL-Composer
 
 {{$NEXT}}
 
+0.19 2017-06-02T18:13:10Z
+
+    - make sure limit & offset are integers
+
 0.18 2017-04-16T08:02:53Z
 
     - do not use //
