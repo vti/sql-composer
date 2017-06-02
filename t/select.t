@@ -323,6 +323,21 @@ subtest 'build with limit and offset 0' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with invalid limit' => sub {
+    my $expr = SQL::Composer::Select->new(
+        from    => 'table',
+        columns => ['a', 'b'],
+        limit   => 'injection',
+        offset  => 'injection'
+    );
+
+    my $sql = $expr->to_sql;
+    is $sql, 'SELECT `table`.`a`,`table`.`b` FROM `table` LIMIT 0 OFFSET 0';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, [];
+};
+
 subtest 'build with join' => sub {
     my $expr = SQL::Composer::Select->new(
         from    => 'table',
