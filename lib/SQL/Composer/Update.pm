@@ -76,6 +76,10 @@ sub new {
     if (defined(my $offset = $params{offset})) {
         $sql .= ' OFFSET ' . $offset;
     }
+    
+    if (defined(my $returning = $params{returning}) && $params{driver} =~ /pg/i) {
+        $sql .= ' RETURNING ' . $returning;
+    }    
 
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
