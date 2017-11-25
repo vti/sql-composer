@@ -62,4 +62,15 @@ subtest 'build with as is and bind values' => sub {
     is_deeply \@bind, [15];
 };
 
+subtest 'build simple with returning' => sub {
+    my $expr =
+      SQL::Composer::Insert->new(into => 'table', values => [foo => 'bar'], returning => 'id');
+
+    my $sql = $expr->to_sql;
+    is $sql, 'INSERT INTO `table` (`foo`) VALUES (?) RETURNING id';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['bar'];
+};
+
 done_testing;
