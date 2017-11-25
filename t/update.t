@@ -85,4 +85,18 @@ subtest 'build with limit and offset' => sub {
     is_deeply \@bind, ['bar'];
 };
 
+subtest 'build with returning' => sub {
+    my $expr = SQL::Composer::Update->new(
+        table     => 'table',
+        values    => [foo => 'bar'],
+        returning => 'foo'
+    );
+    
+    my $sql = $expr->to_sql;
+    is $sql, 'UPDATE `table` SET `foo` = ? RETURNING foo';
+    
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['bar'];    
+};
+
 done_testing;
