@@ -51,16 +51,13 @@ sub new {
                 push @bind,   $value;
             }
         }
-        
+
         if (@columns) {
             $sql .= ' (' . (join ',', map { $self->_quote($_) } @columns) . ')';
             $sql .= ' VALUES (';
             $sql .= join ',', @values;
             $sql .= ')';
-            if($params{returning} && $params{driver} =~ /pg/i){
-                $sql .= ' RETURNING ' . $self->_quote($params{returning});
-            }
-        }        
+        }     
 
         # save this for later ...
         $self->{columns} = \@columns;
@@ -74,6 +71,10 @@ sub new {
             $sql .= ' () VALUES ()';
         }
     }
+    
+    if (defined(my $returning = $params{returning})) {
+        $sql .= ' RETURNING ' . $returning;
+    }       
 
     $self->{sql}  = $sql;
     $self->{bind} = \@bind;
