@@ -54,4 +54,14 @@ subtest 'build with limit and offset' => sub {
     is_deeply \@bind, [];
 };
 
+subtest 'build with returning' => sub {
+    my $expr = SQL::Composer::Delete->new(from => 'table', where => [foo => 'bar'], returning => '*');
+
+    my $sql = $expr->to_sql;
+    is $sql, 'DELETE FROM `table` WHERE `foo` = ? RETURNING *';
+
+    my @bind = $expr->to_bind;
+    is_deeply \@bind, ['bar'];
+};
+
 done_testing;
